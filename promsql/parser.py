@@ -1,20 +1,37 @@
 from sly import Parser
 from .lexer import PromSqlLexer
+from .nodes import *
 
 
 class PromSqlParser(Parser):
+    debugfile = "parser.out"
     # Get the token list from the lexer (required)
     tokens = PromSqlLexer.tokens
     start = "vectorOperation"
+    precedence = (
+        ("left", AND, OR, LE, GE, LT, GT, NE, DEQ),
+        ("left", ADD, SUB),
+        ("left", MULT, DIV, MOD),
+        ("right", UMINUS),
+        ("right", POW),
+    )
 
-    @_("unaryOp vectorOperation")
+    @_("vectorOperation powOp vectorOperation %prec POW")
+    def vectorOperation(self, p):
+        binop = p[1]
+        binop.left_expr = p[0]
+        binop.right_expr = p[2]
+        return binop
+
+    @_("unaryOp vectorOperation %prec UMINUS")
     def vectorOperation(self, p):
         unaryop = p[0]
         unaryop.expr = p[1]
         return unaryop
 
+    @_("vectorOperation multOp vectorOperation")
+    @_("vectorOperation addOp vectorOperation")
     @_("vectorOperation compareOp vectorOperation")
-    @_("vectorOperation arithmeticOp vectorOperation")
     @_("vectorOperation andUnlessOp vectorOperation")
     @_("vectorOperation orOp vectorOperation")
     def vectorOperation(self, p):
@@ -28,63 +45,69 @@ class PromSqlParser(Parser):
         return p[0]
 
     # Operators
-
     @_("ADD")
     @_("SUB")
     def unaryOp(self, p):
         return UnaryOp(op=p[0])
 
     @_("POW grouping")
-    @_("MULT grouping")
-    @_("DIV grouping")
-    @_("MOD grouping")
-    @_("ADD grouping")
-    @_("SUB grouping")
-    def arithmeticOp(self, p):
+    def powOp(self, p):
         binop = p[1]
         binop.op = p[0]
         return binop
 
     @_("POW")
-    @_("MULT")
-    @_("DIV")
-    @_("MOD")
-    @_("ADD")
-    @_("SUB")
-    def arithmeticOp(self, p):
+    def powOp(self, p):
         return BinOp(op=p[0])
 
-    @_("DEQ BOOL grouping")
-    @_("NE BOOL grouping")
-    @_("GT BOOL grouping")
-    @_("LT BOOL grouping")
-    @_("GE BOOL grouping")
-    @_("LE BOOL grouping")
-    def compareOp(self, p):
-        binop = p[2]
-        binop.op = p[0]
-        binop.has_bool = True
-        return binop
-
-    @_("DEQ grouping")
-    @_("NE grouping")
-    @_("GT grouping")
-    @_("LT grouping")
-    @_("GE grouping")
-    @_("LE grouping")
-    def compareOp(self, p):
+    @_("MULT grouping")
+    @_("DIV grouping")
+    @_("MOD grouping")
+    def multOp(self, p):
         binop = p[1]
         binop.op = p[0]
         return binop
 
-    @_("DEQ BOOL")
-    @_("NE BOOL")
-    @_("GT BOOL")
-    @_("LT BOOL")
-    @_("GE BOOL")
-    @_("LE BOOL")
+    @_("MULT")
+    @_("DIV")
+    @_("MOD")
+    def multOp(self, p):
+        return BinOp(op=p[0])
+
+    @_("ADD grouping")
+    @_("SUB grouping")
+    def addOp(self, p):
+        binop = p[1]
+        binop.op = p[0]
+        return binop
+
+    @_("ADD")
+    @_("SUB")
+    def addOp(self, p):
+        return BinOp(op=p[0])
+
+    @_("compareOps BOOL grouping")
     def compareOp(self, p):
-        return BinOp(op=p[0], has_bool=True)
+        binop = p[1]
+        binop.op = p[0].op
+        binop.has_bool = True
+        return binop
+
+    @_("compareOps grouping")
+    def compareOp(self, p):
+        binop = p[1]
+        binop.op = p[0].op
+        return binop
+
+    @_("compareOps BOOL")
+    def compareOp(self, p):
+        binop = p[0]
+        binop.has_bool = True
+        return binop
+    
+    @_("compareOps")
+    def compareOp(self, p):
+        return p[0]
 
     @_("DEQ")
     @_("NE")
@@ -92,7 +115,7 @@ class PromSqlParser(Parser):
     @_("LT")
     @_("GE")
     @_("LE")
-    def compareOp(self, p):
+    def compareOps(self, p):
         return BinOp(op=p[0])
 
     @_("AND grouping")
@@ -135,16 +158,21 @@ class PromSqlParser(Parser):
 
     @_("METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE")
     def instantSelector(self, p):
-        return Metric(p[0], tags=p.labelMatcherList)
+        return InstantVector(name=p[0], tags=p.labelMatcherList)
 
     @_("METRIC_NAME LEFT_BRACE RIGHT_BRACE")
     @_("METRIC_NAME")
     def instantSelector(self, p):
-        return Metric(p[0])
+        return InstantVector(name=p[0])
 
     @_("LEFT_BRACE labelMatcherList RIGHT_BRACE")
     def instantSelector(self, p):
-        return Metric(tags=p.labelMatcherList)
+        tag_list = p.labelMatcherList
+        if tag_list.tags[0].name != "__name__" or tag_list.tags[0].op != "=":
+            raise
+        metric_name = tag_list.tags[0].value
+        tag_list.tags = tag_list.tags[1:]
+        return InstantVector(name=metric_name, tags=tag_list)
 
     @_("labelName EQ STRING")
     @_("labelName NE STRING")
@@ -165,16 +193,19 @@ class PromSqlParser(Parser):
 
     @_("instantSelector TIME_RANGE")
     def matrixSelector(self, p):
-        metric = p[0]
-        metric.time_range = TimeRange(*p[1].split(":"))
-        return metric
+        instant_vector = p[0]
+        time_range = TimeRange(*p[1].split(":"))
+        return RangeVector(
+            name=instant_vector.name, time_range=time_range, tags=instant_vector.tags
+        )
 
     @_("instantSelector OFFSET DURATION")
     @_("matrixSelector OFFSET DURATION")
     def offset(self, p):
-        metric = p[0]
-        metric.offset = p[2]
-        return metric
+        time_range = None if isinstance(p[0], InstantVector) else p[0].time_range
+        return RangeVector(
+            name=p[0].name, time_range=time_range, tags=p[0].tags, offset=p[2]
+        )
 
     # Functions
 
@@ -304,5 +335,8 @@ class PromSqlParser(Parser):
     @_("NUMBER")
     @_("STRING")
     def literal(self, p):
-        return p[0]
-
+        if isinstance(p[0], str):
+            return String(p[0])
+        if isinstance(p[0], float):
+            return Scalar(p[0])
+        raise

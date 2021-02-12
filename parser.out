@@ -1,0 +1,3669 @@
+Grammar:
+
+Rule 0     S' -> vectorOperation
+Rule 1     vectorOperation -> vector
+Rule 2     vectorOperation -> vectorOperation orOp vectorOperation
+Rule 3     vectorOperation -> vectorOperation andUnlessOp vectorOperation
+Rule 4     vectorOperation -> vectorOperation compareOp vectorOperation
+Rule 5     vectorOperation -> vectorOperation addOp vectorOperation
+Rule 6     vectorOperation -> vectorOperation multOp vectorOperation
+Rule 7     vectorOperation -> unaryOp vectorOperation  [precedence=right, level=4]
+Rule 8     vectorOperation -> vectorOperation powOp vectorOperation  [precedence=right, level=5]
+Rule 9     unaryOp -> SUB  [precedence=left, level=2]
+Rule 10    unaryOp -> ADD  [precedence=left, level=2]
+Rule 11    powOp -> POW  [precedence=right, level=5]
+Rule 12    powOp -> POW grouping  [precedence=right, level=5]
+Rule 13    multOp -> MOD  [precedence=left, level=3]
+Rule 14    multOp -> DIV  [precedence=left, level=3]
+Rule 15    multOp -> MULT  [precedence=left, level=3]
+Rule 16    multOp -> MOD grouping  [precedence=left, level=3]
+Rule 17    multOp -> DIV grouping  [precedence=left, level=3]
+Rule 18    multOp -> MULT grouping  [precedence=left, level=3]
+Rule 19    addOp -> SUB  [precedence=left, level=2]
+Rule 20    addOp -> ADD  [precedence=left, level=2]
+Rule 21    addOp -> SUB grouping  [precedence=left, level=2]
+Rule 22    addOp -> ADD grouping  [precedence=left, level=2]
+Rule 23    compareOp -> compareOps
+Rule 24    compareOp -> compareOps BOOL
+Rule 25    compareOp -> compareOps grouping
+Rule 26    compareOp -> compareOps BOOL grouping
+Rule 27    compareOps -> LE  [precedence=left, level=1]
+Rule 28    compareOps -> GE  [precedence=left, level=1]
+Rule 29    compareOps -> LT  [precedence=left, level=1]
+Rule 30    compareOps -> GT  [precedence=left, level=1]
+Rule 31    compareOps -> NE  [precedence=left, level=1]
+Rule 32    compareOps -> DEQ  [precedence=left, level=1]
+Rule 33    andUnlessOp -> UNLESS
+Rule 34    andUnlessOp -> AND  [precedence=left, level=1]
+Rule 35    andUnlessOp -> UNLESS grouping
+Rule 36    andUnlessOp -> AND grouping  [precedence=left, level=1]
+Rule 37    orOp -> OR  [precedence=left, level=1]
+Rule 38    orOp -> OR grouping  [precedence=left, level=1]
+Rule 39    vector -> parens
+Rule 40    vector -> literal
+Rule 41    vector -> offset
+Rule 42    vector -> matrixSelector
+Rule 43    vector -> instantSelector
+Rule 44    vector -> aggregation
+Rule 45    vector -> function
+Rule 46    parens -> LEFT_PAREN vectorOperation RIGHT_PAREN
+Rule 47    instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE
+Rule 48    instantSelector -> METRIC_NAME
+Rule 49    instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE
+Rule 50    instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+Rule 51    labelMatcher -> labelName NRE STRING
+Rule 52    labelMatcher -> labelName RE STRING
+Rule 53    labelMatcher -> labelName NE STRING
+Rule 54    labelMatcher -> labelName EQ STRING
+Rule 55    labelMatcherList -> labelMatcher
+Rule 56    labelMatcherList -> labelMatcher COMMA labelMatcherList
+Rule 57    matrixSelector -> instantSelector TIME_RANGE
+Rule 58    offset -> matrixSelector OFFSET DURATION
+Rule 59    offset -> instantSelector OFFSET DURATION
+Rule 60    function -> FUNCTION parameterList
+Rule 61    parameter -> vectorOperation
+Rule 62    parameter -> literal
+Rule 63    parameterList2 -> parameter
+Rule 64    parameterList2 -> parameter COMMA parameterList2
+Rule 65    parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN
+Rule 66    aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+Rule 67    aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList
+Rule 68    aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+Rule 69    aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList
+Rule 70    aggregation -> AGGREGATION_OPERATOR parameterList
+Rule 71    grouping -> ignoring
+Rule 72    grouping -> on
+Rule 73    grouping -> ignoring groupRight
+Rule 74    grouping -> ignoring groupLeft
+Rule 75    grouping -> on groupRight
+Rule 76    grouping -> on groupLeft
+Rule 77    on -> ON labelNameList
+Rule 78    ignoring -> IGNORING labelNameList
+Rule 79    groupLeft -> GROUP_LEFT labelNameList
+Rule 80    groupRight -> GROUP_RIGHT labelNameList
+Rule 81    labelName -> LABEL_NAME
+Rule 82    labelName -> METRIC_NAME
+Rule 83    labelName -> keyword
+Rule 84    labelNameList2 -> labelName
+Rule 85    labelNameList2 -> labelName COMMA labelNameList2
+Rule 86    labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN
+Rule 87    keyword -> FUNCTION
+Rule 88    keyword -> AGGREGATION_OPERATOR
+Rule 89    keyword -> BOOL
+Rule 90    keyword -> OFFSET
+Rule 91    keyword -> GROUP_RIGHT
+Rule 92    keyword -> GROUP_LEFT
+Rule 93    keyword -> IGNORING
+Rule 94    keyword -> ON
+Rule 95    keyword -> WITHOUT
+Rule 96    keyword -> BY
+Rule 97    keyword -> UNLESS
+Rule 98    keyword -> OR  [precedence=left, level=1]
+Rule 99    keyword -> AND  [precedence=left, level=1]
+Rule 100   literal -> STRING
+Rule 101   literal -> NUMBER
+
+Unused terminals:
+
+    UMINUS
+
+Terminals, with rules where they appear:
+
+ADD                  : 10 20 22
+AGGREGATION_OPERATOR : 66 67 68 69 70 88
+AND                  : 34 36 99
+BOOL                 : 24 26 89
+BY                   : 67 69 96
+COMMA                : 56 64 85
+DEQ                  : 32
+DIV                  : 14 17
+DURATION             : 58 59
+EQ                   : 54
+FUNCTION             : 60 87
+GE                   : 28
+GROUP_LEFT           : 79 92
+GROUP_RIGHT          : 80 91
+GT                   : 30
+IGNORING             : 78 93
+LABEL_NAME           : 81
+LE                   : 27
+LEFT_BRACE           : 47 49 50
+LEFT_PAREN           : 46 65 86
+LT                   : 29
+METRIC_NAME          : 48 49 50 82
+MOD                  : 13 16
+MULT                 : 15 18
+NE                   : 31 53
+NRE                  : 51
+NUMBER               : 101
+OFFSET               : 58 59 90
+ON                   : 77 94
+OR                   : 37 38 98
+POW                  : 11 12
+RE                   : 52
+RIGHT_BRACE          : 47 49 50
+RIGHT_PAREN          : 46 65 86
+STRING               : 51 52 53 54 100
+SUB                  : 9 19 21
+TIME_RANGE           : 57
+UMINUS               : 
+UNLESS               : 33 35 97
+WITHOUT              : 66 68 95
+error                : 
+
+Nonterminals, with rules where they appear:
+
+addOp                : 5
+aggregation          : 44
+andUnlessOp          : 3
+compareOp            : 4
+compareOps           : 23 24 25 26
+function             : 45
+groupLeft            : 74 76
+groupRight           : 73 75
+grouping             : 12 16 17 18 21 22 25 26 35 36 38
+ignoring             : 71 73 74
+instantSelector      : 43 57 59
+keyword              : 83
+labelMatcher         : 55 56
+labelMatcherList     : 47 50 56
+labelName            : 51 52 53 54 84 85
+labelNameList        : 66 67 68 69 77 78 79 80
+labelNameList2       : 85 86
+literal              : 40 62
+matrixSelector       : 42 58
+multOp               : 6
+offset               : 41
+on                   : 72 75 76
+orOp                 : 2
+parameter            : 63 64
+parameterList        : 60 66 67 68 69 70
+parameterList2       : 64 65
+parens               : 39
+powOp                : 8
+unaryOp              : 7
+vector               : 1
+vectorOperation      : 2 2 3 3 4 4 5 5 6 6 7 8 8 46 61 0
+
+
+state 0
+
+    (0) S' -> . vectorOperation
+    (1) vectorOperation -> . vector
+    (2) vectorOperation -> . vectorOperation orOp vectorOperation
+    (3) vectorOperation -> . vectorOperation andUnlessOp vectorOperation
+    (4) vectorOperation -> . vectorOperation compareOp vectorOperation
+    (5) vectorOperation -> . vectorOperation addOp vectorOperation
+    (6) vectorOperation -> . vectorOperation multOp vectorOperation
+    (7) vectorOperation -> . unaryOp vectorOperation
+    (8) vectorOperation -> . vectorOperation powOp vectorOperation
+    (39) vector -> . parens
+    (40) vector -> . literal
+    (41) vector -> . offset
+    (42) vector -> . matrixSelector
+    (43) vector -> . instantSelector
+    (44) vector -> . aggregation
+    (45) vector -> . function
+    (9) unaryOp -> . SUB
+    (10) unaryOp -> . ADD
+    (46) parens -> . LEFT_PAREN vectorOperation RIGHT_PAREN
+    (100) literal -> . STRING
+    (101) literal -> . NUMBER
+    (58) offset -> . matrixSelector OFFSET DURATION
+    (59) offset -> . instantSelector OFFSET DURATION
+    (57) matrixSelector -> . instantSelector TIME_RANGE
+    (47) instantSelector -> . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (48) instantSelector -> . METRIC_NAME
+    (49) instantSelector -> . METRIC_NAME LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> . METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (66) aggregation -> . AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+    (67) aggregation -> . AGGREGATION_OPERATOR parameterList BY labelNameList
+    (68) aggregation -> . AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+    (69) aggregation -> . AGGREGATION_OPERATOR BY labelNameList parameterList
+    (70) aggregation -> . AGGREGATION_OPERATOR parameterList
+    (60) function -> . FUNCTION parameterList
+    SUB             shift and go to state 11
+    ADD             shift and go to state 12
+    LEFT_PAREN      shift and go to state 13
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 15
+    LEFT_BRACE      shift and go to state 16
+    METRIC_NAME     shift and go to state 17
+    AGGREGATION_OPERATOR shift and go to state 18
+    FUNCTION        shift and go to state 19
+
+    vectorOperation                shift and go to state 1
+    vector                         shift and go to state 2
+    unaryOp                        shift and go to state 3
+    parens                         shift and go to state 4
+    literal                        shift and go to state 5
+    offset                         shift and go to state 6
+    matrixSelector                 shift and go to state 7
+    instantSelector                shift and go to state 8
+    aggregation                    shift and go to state 9
+    function                       shift and go to state 10
+
+state 1
+
+    (0) S' -> vectorOperation .
+    (2) vectorOperation -> vectorOperation . orOp vectorOperation
+    (3) vectorOperation -> vectorOperation . andUnlessOp vectorOperation
+    (4) vectorOperation -> vectorOperation . compareOp vectorOperation
+    (5) vectorOperation -> vectorOperation . addOp vectorOperation
+    (6) vectorOperation -> vectorOperation . multOp vectorOperation
+    (8) vectorOperation -> vectorOperation . powOp vectorOperation
+    (37) orOp -> . OR
+    (38) orOp -> . OR grouping
+    (33) andUnlessOp -> . UNLESS
+    (34) andUnlessOp -> . AND
+    (35) andUnlessOp -> . UNLESS grouping
+    (36) andUnlessOp -> . AND grouping
+    (23) compareOp -> . compareOps
+    (24) compareOp -> . compareOps BOOL
+    (25) compareOp -> . compareOps grouping
+    (26) compareOp -> . compareOps BOOL grouping
+    (19) addOp -> . SUB
+    (20) addOp -> . ADD
+    (21) addOp -> . SUB grouping
+    (22) addOp -> . ADD grouping
+    (13) multOp -> . MOD
+    (14) multOp -> . DIV
+    (15) multOp -> . MULT
+    (16) multOp -> . MOD grouping
+    (17) multOp -> . DIV grouping
+    (18) multOp -> . MULT grouping
+    (11) powOp -> . POW
+    (12) powOp -> . POW grouping
+    (27) compareOps -> . LE
+    (28) compareOps -> . GE
+    (29) compareOps -> . LT
+    (30) compareOps -> . GT
+    (31) compareOps -> . NE
+    (32) compareOps -> . DEQ
+    OR              shift and go to state 26
+    UNLESS          shift and go to state 27
+    AND             shift and go to state 28
+    SUB             shift and go to state 30
+    ADD             shift and go to state 31
+    MOD             shift and go to state 32
+    DIV             shift and go to state 33
+    MULT            shift and go to state 34
+    POW             shift and go to state 35
+    LE              shift and go to state 36
+    GE              shift and go to state 37
+    LT              shift and go to state 38
+    GT              shift and go to state 39
+    NE              shift and go to state 40
+    DEQ             shift and go to state 41
+
+    orOp                           shift and go to state 20
+    andUnlessOp                    shift and go to state 21
+    compareOp                      shift and go to state 22
+    addOp                          shift and go to state 23
+    multOp                         shift and go to state 24
+    powOp                          shift and go to state 25
+    compareOps                     shift and go to state 29
+
+state 2
+
+    (1) vectorOperation -> vector .
+    OR              reduce using rule 1 (vectorOperation -> vector .)
+    UNLESS          reduce using rule 1 (vectorOperation -> vector .)
+    AND             reduce using rule 1 (vectorOperation -> vector .)
+    SUB             reduce using rule 1 (vectorOperation -> vector .)
+    ADD             reduce using rule 1 (vectorOperation -> vector .)
+    MOD             reduce using rule 1 (vectorOperation -> vector .)
+    DIV             reduce using rule 1 (vectorOperation -> vector .)
+    MULT            reduce using rule 1 (vectorOperation -> vector .)
+    POW             reduce using rule 1 (vectorOperation -> vector .)
+    LE              reduce using rule 1 (vectorOperation -> vector .)
+    GE              reduce using rule 1 (vectorOperation -> vector .)
+    LT              reduce using rule 1 (vectorOperation -> vector .)
+    GT              reduce using rule 1 (vectorOperation -> vector .)
+    NE              reduce using rule 1 (vectorOperation -> vector .)
+    DEQ             reduce using rule 1 (vectorOperation -> vector .)
+    $end            reduce using rule 1 (vectorOperation -> vector .)
+    RIGHT_PAREN     reduce using rule 1 (vectorOperation -> vector .)
+    COMMA           reduce using rule 1 (vectorOperation -> vector .)
+
+
+state 3
+
+    (7) vectorOperation -> unaryOp . vectorOperation
+    (1) vectorOperation -> . vector
+    (2) vectorOperation -> . vectorOperation orOp vectorOperation
+    (3) vectorOperation -> . vectorOperation andUnlessOp vectorOperation
+    (4) vectorOperation -> . vectorOperation compareOp vectorOperation
+    (5) vectorOperation -> . vectorOperation addOp vectorOperation
+    (6) vectorOperation -> . vectorOperation multOp vectorOperation
+    (7) vectorOperation -> . unaryOp vectorOperation
+    (8) vectorOperation -> . vectorOperation powOp vectorOperation
+    (39) vector -> . parens
+    (40) vector -> . literal
+    (41) vector -> . offset
+    (42) vector -> . matrixSelector
+    (43) vector -> . instantSelector
+    (44) vector -> . aggregation
+    (45) vector -> . function
+    (9) unaryOp -> . SUB
+    (10) unaryOp -> . ADD
+    (46) parens -> . LEFT_PAREN vectorOperation RIGHT_PAREN
+    (100) literal -> . STRING
+    (101) literal -> . NUMBER
+    (58) offset -> . matrixSelector OFFSET DURATION
+    (59) offset -> . instantSelector OFFSET DURATION
+    (57) matrixSelector -> . instantSelector TIME_RANGE
+    (47) instantSelector -> . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (48) instantSelector -> . METRIC_NAME
+    (49) instantSelector -> . METRIC_NAME LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> . METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (66) aggregation -> . AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+    (67) aggregation -> . AGGREGATION_OPERATOR parameterList BY labelNameList
+    (68) aggregation -> . AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+    (69) aggregation -> . AGGREGATION_OPERATOR BY labelNameList parameterList
+    (70) aggregation -> . AGGREGATION_OPERATOR parameterList
+    (60) function -> . FUNCTION parameterList
+    SUB             shift and go to state 11
+    ADD             shift and go to state 12
+    LEFT_PAREN      shift and go to state 13
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 15
+    LEFT_BRACE      shift and go to state 16
+    METRIC_NAME     shift and go to state 17
+    AGGREGATION_OPERATOR shift and go to state 18
+    FUNCTION        shift and go to state 19
+
+    unaryOp                        shift and go to state 3
+    vectorOperation                shift and go to state 42
+    vector                         shift and go to state 2
+    parens                         shift and go to state 4
+    literal                        shift and go to state 5
+    offset                         shift and go to state 6
+    matrixSelector                 shift and go to state 7
+    instantSelector                shift and go to state 8
+    aggregation                    shift and go to state 9
+    function                       shift and go to state 10
+
+state 4
+
+    (39) vector -> parens .
+    OR              reduce using rule 39 (vector -> parens .)
+    UNLESS          reduce using rule 39 (vector -> parens .)
+    AND             reduce using rule 39 (vector -> parens .)
+    SUB             reduce using rule 39 (vector -> parens .)
+    ADD             reduce using rule 39 (vector -> parens .)
+    MOD             reduce using rule 39 (vector -> parens .)
+    DIV             reduce using rule 39 (vector -> parens .)
+    MULT            reduce using rule 39 (vector -> parens .)
+    POW             reduce using rule 39 (vector -> parens .)
+    LE              reduce using rule 39 (vector -> parens .)
+    GE              reduce using rule 39 (vector -> parens .)
+    LT              reduce using rule 39 (vector -> parens .)
+    GT              reduce using rule 39 (vector -> parens .)
+    NE              reduce using rule 39 (vector -> parens .)
+    DEQ             reduce using rule 39 (vector -> parens .)
+    $end            reduce using rule 39 (vector -> parens .)
+    RIGHT_PAREN     reduce using rule 39 (vector -> parens .)
+    COMMA           reduce using rule 39 (vector -> parens .)
+
+
+state 5
+
+    (40) vector -> literal .
+    OR              reduce using rule 40 (vector -> literal .)
+    UNLESS          reduce using rule 40 (vector -> literal .)
+    AND             reduce using rule 40 (vector -> literal .)
+    SUB             reduce using rule 40 (vector -> literal .)
+    ADD             reduce using rule 40 (vector -> literal .)
+    MOD             reduce using rule 40 (vector -> literal .)
+    DIV             reduce using rule 40 (vector -> literal .)
+    MULT            reduce using rule 40 (vector -> literal .)
+    POW             reduce using rule 40 (vector -> literal .)
+    LE              reduce using rule 40 (vector -> literal .)
+    GE              reduce using rule 40 (vector -> literal .)
+    LT              reduce using rule 40 (vector -> literal .)
+    GT              reduce using rule 40 (vector -> literal .)
+    NE              reduce using rule 40 (vector -> literal .)
+    DEQ             reduce using rule 40 (vector -> literal .)
+    $end            reduce using rule 40 (vector -> literal .)
+    RIGHT_PAREN     reduce using rule 40 (vector -> literal .)
+    COMMA           reduce using rule 40 (vector -> literal .)
+
+
+state 6
+
+    (41) vector -> offset .
+    OR              reduce using rule 41 (vector -> offset .)
+    UNLESS          reduce using rule 41 (vector -> offset .)
+    AND             reduce using rule 41 (vector -> offset .)
+    SUB             reduce using rule 41 (vector -> offset .)
+    ADD             reduce using rule 41 (vector -> offset .)
+    MOD             reduce using rule 41 (vector -> offset .)
+    DIV             reduce using rule 41 (vector -> offset .)
+    MULT            reduce using rule 41 (vector -> offset .)
+    POW             reduce using rule 41 (vector -> offset .)
+    LE              reduce using rule 41 (vector -> offset .)
+    GE              reduce using rule 41 (vector -> offset .)
+    LT              reduce using rule 41 (vector -> offset .)
+    GT              reduce using rule 41 (vector -> offset .)
+    NE              reduce using rule 41 (vector -> offset .)
+    DEQ             reduce using rule 41 (vector -> offset .)
+    $end            reduce using rule 41 (vector -> offset .)
+    RIGHT_PAREN     reduce using rule 41 (vector -> offset .)
+    COMMA           reduce using rule 41 (vector -> offset .)
+
+
+state 7
+
+    (42) vector -> matrixSelector .
+    (58) offset -> matrixSelector . OFFSET DURATION
+    OR              reduce using rule 42 (vector -> matrixSelector .)
+    UNLESS          reduce using rule 42 (vector -> matrixSelector .)
+    AND             reduce using rule 42 (vector -> matrixSelector .)
+    SUB             reduce using rule 42 (vector -> matrixSelector .)
+    ADD             reduce using rule 42 (vector -> matrixSelector .)
+    MOD             reduce using rule 42 (vector -> matrixSelector .)
+    DIV             reduce using rule 42 (vector -> matrixSelector .)
+    MULT            reduce using rule 42 (vector -> matrixSelector .)
+    POW             reduce using rule 42 (vector -> matrixSelector .)
+    LE              reduce using rule 42 (vector -> matrixSelector .)
+    GE              reduce using rule 42 (vector -> matrixSelector .)
+    LT              reduce using rule 42 (vector -> matrixSelector .)
+    GT              reduce using rule 42 (vector -> matrixSelector .)
+    NE              reduce using rule 42 (vector -> matrixSelector .)
+    DEQ             reduce using rule 42 (vector -> matrixSelector .)
+    $end            reduce using rule 42 (vector -> matrixSelector .)
+    RIGHT_PAREN     reduce using rule 42 (vector -> matrixSelector .)
+    COMMA           reduce using rule 42 (vector -> matrixSelector .)
+    OFFSET          shift and go to state 43
+
+
+state 8
+
+    (43) vector -> instantSelector .
+    (59) offset -> instantSelector . OFFSET DURATION
+    (57) matrixSelector -> instantSelector . TIME_RANGE
+    OR              reduce using rule 43 (vector -> instantSelector .)
+    UNLESS          reduce using rule 43 (vector -> instantSelector .)
+    AND             reduce using rule 43 (vector -> instantSelector .)
+    SUB             reduce using rule 43 (vector -> instantSelector .)
+    ADD             reduce using rule 43 (vector -> instantSelector .)
+    MOD             reduce using rule 43 (vector -> instantSelector .)
+    DIV             reduce using rule 43 (vector -> instantSelector .)
+    MULT            reduce using rule 43 (vector -> instantSelector .)
+    POW             reduce using rule 43 (vector -> instantSelector .)
+    LE              reduce using rule 43 (vector -> instantSelector .)
+    GE              reduce using rule 43 (vector -> instantSelector .)
+    LT              reduce using rule 43 (vector -> instantSelector .)
+    GT              reduce using rule 43 (vector -> instantSelector .)
+    NE              reduce using rule 43 (vector -> instantSelector .)
+    DEQ             reduce using rule 43 (vector -> instantSelector .)
+    $end            reduce using rule 43 (vector -> instantSelector .)
+    RIGHT_PAREN     reduce using rule 43 (vector -> instantSelector .)
+    COMMA           reduce using rule 43 (vector -> instantSelector .)
+    OFFSET          shift and go to state 44
+    TIME_RANGE      shift and go to state 45
+
+
+state 9
+
+    (44) vector -> aggregation .
+    OR              reduce using rule 44 (vector -> aggregation .)
+    UNLESS          reduce using rule 44 (vector -> aggregation .)
+    AND             reduce using rule 44 (vector -> aggregation .)
+    SUB             reduce using rule 44 (vector -> aggregation .)
+    ADD             reduce using rule 44 (vector -> aggregation .)
+    MOD             reduce using rule 44 (vector -> aggregation .)
+    DIV             reduce using rule 44 (vector -> aggregation .)
+    MULT            reduce using rule 44 (vector -> aggregation .)
+    POW             reduce using rule 44 (vector -> aggregation .)
+    LE              reduce using rule 44 (vector -> aggregation .)
+    GE              reduce using rule 44 (vector -> aggregation .)
+    LT              reduce using rule 44 (vector -> aggregation .)
+    GT              reduce using rule 44 (vector -> aggregation .)
+    NE              reduce using rule 44 (vector -> aggregation .)
+    DEQ             reduce using rule 44 (vector -> aggregation .)
+    $end            reduce using rule 44 (vector -> aggregation .)
+    RIGHT_PAREN     reduce using rule 44 (vector -> aggregation .)
+    COMMA           reduce using rule 44 (vector -> aggregation .)
+
+
+state 10
+
+    (45) vector -> function .
+    OR              reduce using rule 45 (vector -> function .)
+    UNLESS          reduce using rule 45 (vector -> function .)
+    AND             reduce using rule 45 (vector -> function .)
+    SUB             reduce using rule 45 (vector -> function .)
+    ADD             reduce using rule 45 (vector -> function .)
+    MOD             reduce using rule 45 (vector -> function .)
+    DIV             reduce using rule 45 (vector -> function .)
+    MULT            reduce using rule 45 (vector -> function .)
+    POW             reduce using rule 45 (vector -> function .)
+    LE              reduce using rule 45 (vector -> function .)
+    GE              reduce using rule 45 (vector -> function .)
+    LT              reduce using rule 45 (vector -> function .)
+    GT              reduce using rule 45 (vector -> function .)
+    NE              reduce using rule 45 (vector -> function .)
+    DEQ             reduce using rule 45 (vector -> function .)
+    $end            reduce using rule 45 (vector -> function .)
+    RIGHT_PAREN     reduce using rule 45 (vector -> function .)
+    COMMA           reduce using rule 45 (vector -> function .)
+
+
+state 11
+
+    (9) unaryOp -> SUB .
+    SUB             reduce using rule 9 (unaryOp -> SUB .)
+    ADD             reduce using rule 9 (unaryOp -> SUB .)
+    LEFT_PAREN      reduce using rule 9 (unaryOp -> SUB .)
+    STRING          reduce using rule 9 (unaryOp -> SUB .)
+    NUMBER          reduce using rule 9 (unaryOp -> SUB .)
+    LEFT_BRACE      reduce using rule 9 (unaryOp -> SUB .)
+    METRIC_NAME     reduce using rule 9 (unaryOp -> SUB .)
+    AGGREGATION_OPERATOR reduce using rule 9 (unaryOp -> SUB .)
+    FUNCTION        reduce using rule 9 (unaryOp -> SUB .)
+
+
+state 12
+
+    (10) unaryOp -> ADD .
+    SUB             reduce using rule 10 (unaryOp -> ADD .)
+    ADD             reduce using rule 10 (unaryOp -> ADD .)
+    LEFT_PAREN      reduce using rule 10 (unaryOp -> ADD .)
+    STRING          reduce using rule 10 (unaryOp -> ADD .)
+    NUMBER          reduce using rule 10 (unaryOp -> ADD .)
+    LEFT_BRACE      reduce using rule 10 (unaryOp -> ADD .)
+    METRIC_NAME     reduce using rule 10 (unaryOp -> ADD .)
+    AGGREGATION_OPERATOR reduce using rule 10 (unaryOp -> ADD .)
+    FUNCTION        reduce using rule 10 (unaryOp -> ADD .)
+
+
+state 13
+
+    (46) parens -> LEFT_PAREN . vectorOperation RIGHT_PAREN
+    (1) vectorOperation -> . vector
+    (2) vectorOperation -> . vectorOperation orOp vectorOperation
+    (3) vectorOperation -> . vectorOperation andUnlessOp vectorOperation
+    (4) vectorOperation -> . vectorOperation compareOp vectorOperation
+    (5) vectorOperation -> . vectorOperation addOp vectorOperation
+    (6) vectorOperation -> . vectorOperation multOp vectorOperation
+    (7) vectorOperation -> . unaryOp vectorOperation
+    (8) vectorOperation -> . vectorOperation powOp vectorOperation
+    (39) vector -> . parens
+    (40) vector -> . literal
+    (41) vector -> . offset
+    (42) vector -> . matrixSelector
+    (43) vector -> . instantSelector
+    (44) vector -> . aggregation
+    (45) vector -> . function
+    (9) unaryOp -> . SUB
+    (10) unaryOp -> . ADD
+    (46) parens -> . LEFT_PAREN vectorOperation RIGHT_PAREN
+    (100) literal -> . STRING
+    (101) literal -> . NUMBER
+    (58) offset -> . matrixSelector OFFSET DURATION
+    (59) offset -> . instantSelector OFFSET DURATION
+    (57) matrixSelector -> . instantSelector TIME_RANGE
+    (47) instantSelector -> . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (48) instantSelector -> . METRIC_NAME
+    (49) instantSelector -> . METRIC_NAME LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> . METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (66) aggregation -> . AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+    (67) aggregation -> . AGGREGATION_OPERATOR parameterList BY labelNameList
+    (68) aggregation -> . AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+    (69) aggregation -> . AGGREGATION_OPERATOR BY labelNameList parameterList
+    (70) aggregation -> . AGGREGATION_OPERATOR parameterList
+    (60) function -> . FUNCTION parameterList
+    SUB             shift and go to state 11
+    ADD             shift and go to state 12
+    LEFT_PAREN      shift and go to state 13
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 15
+    LEFT_BRACE      shift and go to state 16
+    METRIC_NAME     shift and go to state 17
+    AGGREGATION_OPERATOR shift and go to state 18
+    FUNCTION        shift and go to state 19
+
+    vectorOperation                shift and go to state 46
+    vector                         shift and go to state 2
+    unaryOp                        shift and go to state 3
+    parens                         shift and go to state 4
+    literal                        shift and go to state 5
+    offset                         shift and go to state 6
+    matrixSelector                 shift and go to state 7
+    instantSelector                shift and go to state 8
+    aggregation                    shift and go to state 9
+    function                       shift and go to state 10
+
+state 14
+
+    (100) literal -> STRING .
+    OR              reduce using rule 100 (literal -> STRING .)
+    UNLESS          reduce using rule 100 (literal -> STRING .)
+    AND             reduce using rule 100 (literal -> STRING .)
+    SUB             reduce using rule 100 (literal -> STRING .)
+    ADD             reduce using rule 100 (literal -> STRING .)
+    MOD             reduce using rule 100 (literal -> STRING .)
+    DIV             reduce using rule 100 (literal -> STRING .)
+    MULT            reduce using rule 100 (literal -> STRING .)
+    POW             reduce using rule 100 (literal -> STRING .)
+    LE              reduce using rule 100 (literal -> STRING .)
+    GE              reduce using rule 100 (literal -> STRING .)
+    LT              reduce using rule 100 (literal -> STRING .)
+    GT              reduce using rule 100 (literal -> STRING .)
+    NE              reduce using rule 100 (literal -> STRING .)
+    DEQ             reduce using rule 100 (literal -> STRING .)
+    $end            reduce using rule 100 (literal -> STRING .)
+    RIGHT_PAREN     reduce using rule 100 (literal -> STRING .)
+    COMMA           reduce using rule 100 (literal -> STRING .)
+
+
+state 15
+
+    (101) literal -> NUMBER .
+    OR              reduce using rule 101 (literal -> NUMBER .)
+    UNLESS          reduce using rule 101 (literal -> NUMBER .)
+    AND             reduce using rule 101 (literal -> NUMBER .)
+    SUB             reduce using rule 101 (literal -> NUMBER .)
+    ADD             reduce using rule 101 (literal -> NUMBER .)
+    MOD             reduce using rule 101 (literal -> NUMBER .)
+    DIV             reduce using rule 101 (literal -> NUMBER .)
+    MULT            reduce using rule 101 (literal -> NUMBER .)
+    POW             reduce using rule 101 (literal -> NUMBER .)
+    LE              reduce using rule 101 (literal -> NUMBER .)
+    GE              reduce using rule 101 (literal -> NUMBER .)
+    LT              reduce using rule 101 (literal -> NUMBER .)
+    GT              reduce using rule 101 (literal -> NUMBER .)
+    NE              reduce using rule 101 (literal -> NUMBER .)
+    DEQ             reduce using rule 101 (literal -> NUMBER .)
+    $end            reduce using rule 101 (literal -> NUMBER .)
+    RIGHT_PAREN     reduce using rule 101 (literal -> NUMBER .)
+    COMMA           reduce using rule 101 (literal -> NUMBER .)
+
+
+state 16
+
+    (47) instantSelector -> LEFT_BRACE . labelMatcherList RIGHT_BRACE
+    (55) labelMatcherList -> . labelMatcher
+    (56) labelMatcherList -> . labelMatcher COMMA labelMatcherList
+    (51) labelMatcher -> . labelName NRE STRING
+    (52) labelMatcher -> . labelName RE STRING
+    (53) labelMatcher -> . labelName NE STRING
+    (54) labelMatcher -> . labelName EQ STRING
+    (81) labelName -> . LABEL_NAME
+    (82) labelName -> . METRIC_NAME
+    (83) labelName -> . keyword
+    (87) keyword -> . FUNCTION
+    (88) keyword -> . AGGREGATION_OPERATOR
+    (89) keyword -> . BOOL
+    (90) keyword -> . OFFSET
+    (91) keyword -> . GROUP_RIGHT
+    (92) keyword -> . GROUP_LEFT
+    (93) keyword -> . IGNORING
+    (94) keyword -> . ON
+    (95) keyword -> . WITHOUT
+    (96) keyword -> . BY
+    (97) keyword -> . UNLESS
+    (98) keyword -> . OR
+    (99) keyword -> . AND
+    LABEL_NAME      shift and go to state 50
+    METRIC_NAME     shift and go to state 51
+    FUNCTION        shift and go to state 53
+    AGGREGATION_OPERATOR shift and go to state 54
+    BOOL            shift and go to state 55
+    OFFSET          shift and go to state 56
+    GROUP_RIGHT     shift and go to state 57
+    GROUP_LEFT      shift and go to state 58
+    IGNORING        shift and go to state 59
+    ON              shift and go to state 60
+    WITHOUT         shift and go to state 61
+    BY              shift and go to state 62
+    UNLESS          shift and go to state 63
+    OR              shift and go to state 64
+    AND             shift and go to state 65
+
+    labelMatcherList               shift and go to state 47
+    labelMatcher                   shift and go to state 48
+    labelName                      shift and go to state 49
+    keyword                        shift and go to state 52
+
+state 17
+
+    (48) instantSelector -> METRIC_NAME .
+    (49) instantSelector -> METRIC_NAME . LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> METRIC_NAME . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    OFFSET          reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    TIME_RANGE      reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    OR              reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    UNLESS          reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    AND             reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    SUB             reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    ADD             reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    MOD             reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    DIV             reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    MULT            reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    POW             reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    LE              reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    GE              reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    LT              reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    GT              reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    NE              reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    DEQ             reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    $end            reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    RIGHT_PAREN     reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    COMMA           reduce using rule 48 (instantSelector -> METRIC_NAME .)
+    LEFT_BRACE      shift and go to state 66
+
+
+state 18
+
+    (66) aggregation -> AGGREGATION_OPERATOR . parameterList WITHOUT labelNameList
+    (67) aggregation -> AGGREGATION_OPERATOR . parameterList BY labelNameList
+    (68) aggregation -> AGGREGATION_OPERATOR . WITHOUT labelNameList parameterList
+    (69) aggregation -> AGGREGATION_OPERATOR . BY labelNameList parameterList
+    (70) aggregation -> AGGREGATION_OPERATOR . parameterList
+    (65) parameterList -> . LEFT_PAREN parameterList2 RIGHT_PAREN
+    WITHOUT         shift and go to state 68
+    BY              shift and go to state 69
+    LEFT_PAREN      shift and go to state 70
+
+    parameterList                  shift and go to state 67
+
+state 19
+
+    (60) function -> FUNCTION . parameterList
+    (65) parameterList -> . LEFT_PAREN parameterList2 RIGHT_PAREN
+    LEFT_PAREN      shift and go to state 70
+
+    parameterList                  shift and go to state 71
+
+state 20
+
+    (2) vectorOperation -> vectorOperation orOp . vectorOperation
+    (1) vectorOperation -> . vector
+    (2) vectorOperation -> . vectorOperation orOp vectorOperation
+    (3) vectorOperation -> . vectorOperation andUnlessOp vectorOperation
+    (4) vectorOperation -> . vectorOperation compareOp vectorOperation
+    (5) vectorOperation -> . vectorOperation addOp vectorOperation
+    (6) vectorOperation -> . vectorOperation multOp vectorOperation
+    (7) vectorOperation -> . unaryOp vectorOperation
+    (8) vectorOperation -> . vectorOperation powOp vectorOperation
+    (39) vector -> . parens
+    (40) vector -> . literal
+    (41) vector -> . offset
+    (42) vector -> . matrixSelector
+    (43) vector -> . instantSelector
+    (44) vector -> . aggregation
+    (45) vector -> . function
+    (9) unaryOp -> . SUB
+    (10) unaryOp -> . ADD
+    (46) parens -> . LEFT_PAREN vectorOperation RIGHT_PAREN
+    (100) literal -> . STRING
+    (101) literal -> . NUMBER
+    (58) offset -> . matrixSelector OFFSET DURATION
+    (59) offset -> . instantSelector OFFSET DURATION
+    (57) matrixSelector -> . instantSelector TIME_RANGE
+    (47) instantSelector -> . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (48) instantSelector -> . METRIC_NAME
+    (49) instantSelector -> . METRIC_NAME LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> . METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (66) aggregation -> . AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+    (67) aggregation -> . AGGREGATION_OPERATOR parameterList BY labelNameList
+    (68) aggregation -> . AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+    (69) aggregation -> . AGGREGATION_OPERATOR BY labelNameList parameterList
+    (70) aggregation -> . AGGREGATION_OPERATOR parameterList
+    (60) function -> . FUNCTION parameterList
+    SUB             shift and go to state 11
+    ADD             shift and go to state 12
+    LEFT_PAREN      shift and go to state 13
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 15
+    LEFT_BRACE      shift and go to state 16
+    METRIC_NAME     shift and go to state 17
+    AGGREGATION_OPERATOR shift and go to state 18
+    FUNCTION        shift and go to state 19
+
+    vectorOperation                shift and go to state 72
+    vector                         shift and go to state 2
+    unaryOp                        shift and go to state 3
+    parens                         shift and go to state 4
+    literal                        shift and go to state 5
+    offset                         shift and go to state 6
+    matrixSelector                 shift and go to state 7
+    instantSelector                shift and go to state 8
+    aggregation                    shift and go to state 9
+    function                       shift and go to state 10
+
+state 21
+
+    (3) vectorOperation -> vectorOperation andUnlessOp . vectorOperation
+    (1) vectorOperation -> . vector
+    (2) vectorOperation -> . vectorOperation orOp vectorOperation
+    (3) vectorOperation -> . vectorOperation andUnlessOp vectorOperation
+    (4) vectorOperation -> . vectorOperation compareOp vectorOperation
+    (5) vectorOperation -> . vectorOperation addOp vectorOperation
+    (6) vectorOperation -> . vectorOperation multOp vectorOperation
+    (7) vectorOperation -> . unaryOp vectorOperation
+    (8) vectorOperation -> . vectorOperation powOp vectorOperation
+    (39) vector -> . parens
+    (40) vector -> . literal
+    (41) vector -> . offset
+    (42) vector -> . matrixSelector
+    (43) vector -> . instantSelector
+    (44) vector -> . aggregation
+    (45) vector -> . function
+    (9) unaryOp -> . SUB
+    (10) unaryOp -> . ADD
+    (46) parens -> . LEFT_PAREN vectorOperation RIGHT_PAREN
+    (100) literal -> . STRING
+    (101) literal -> . NUMBER
+    (58) offset -> . matrixSelector OFFSET DURATION
+    (59) offset -> . instantSelector OFFSET DURATION
+    (57) matrixSelector -> . instantSelector TIME_RANGE
+    (47) instantSelector -> . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (48) instantSelector -> . METRIC_NAME
+    (49) instantSelector -> . METRIC_NAME LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> . METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (66) aggregation -> . AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+    (67) aggregation -> . AGGREGATION_OPERATOR parameterList BY labelNameList
+    (68) aggregation -> . AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+    (69) aggregation -> . AGGREGATION_OPERATOR BY labelNameList parameterList
+    (70) aggregation -> . AGGREGATION_OPERATOR parameterList
+    (60) function -> . FUNCTION parameterList
+    SUB             shift and go to state 11
+    ADD             shift and go to state 12
+    LEFT_PAREN      shift and go to state 13
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 15
+    LEFT_BRACE      shift and go to state 16
+    METRIC_NAME     shift and go to state 17
+    AGGREGATION_OPERATOR shift and go to state 18
+    FUNCTION        shift and go to state 19
+
+    vectorOperation                shift and go to state 73
+    vector                         shift and go to state 2
+    unaryOp                        shift and go to state 3
+    parens                         shift and go to state 4
+    literal                        shift and go to state 5
+    offset                         shift and go to state 6
+    matrixSelector                 shift and go to state 7
+    instantSelector                shift and go to state 8
+    aggregation                    shift and go to state 9
+    function                       shift and go to state 10
+
+state 22
+
+    (4) vectorOperation -> vectorOperation compareOp . vectorOperation
+    (1) vectorOperation -> . vector
+    (2) vectorOperation -> . vectorOperation orOp vectorOperation
+    (3) vectorOperation -> . vectorOperation andUnlessOp vectorOperation
+    (4) vectorOperation -> . vectorOperation compareOp vectorOperation
+    (5) vectorOperation -> . vectorOperation addOp vectorOperation
+    (6) vectorOperation -> . vectorOperation multOp vectorOperation
+    (7) vectorOperation -> . unaryOp vectorOperation
+    (8) vectorOperation -> . vectorOperation powOp vectorOperation
+    (39) vector -> . parens
+    (40) vector -> . literal
+    (41) vector -> . offset
+    (42) vector -> . matrixSelector
+    (43) vector -> . instantSelector
+    (44) vector -> . aggregation
+    (45) vector -> . function
+    (9) unaryOp -> . SUB
+    (10) unaryOp -> . ADD
+    (46) parens -> . LEFT_PAREN vectorOperation RIGHT_PAREN
+    (100) literal -> . STRING
+    (101) literal -> . NUMBER
+    (58) offset -> . matrixSelector OFFSET DURATION
+    (59) offset -> . instantSelector OFFSET DURATION
+    (57) matrixSelector -> . instantSelector TIME_RANGE
+    (47) instantSelector -> . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (48) instantSelector -> . METRIC_NAME
+    (49) instantSelector -> . METRIC_NAME LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> . METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (66) aggregation -> . AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+    (67) aggregation -> . AGGREGATION_OPERATOR parameterList BY labelNameList
+    (68) aggregation -> . AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+    (69) aggregation -> . AGGREGATION_OPERATOR BY labelNameList parameterList
+    (70) aggregation -> . AGGREGATION_OPERATOR parameterList
+    (60) function -> . FUNCTION parameterList
+    SUB             shift and go to state 11
+    ADD             shift and go to state 12
+    LEFT_PAREN      shift and go to state 13
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 15
+    LEFT_BRACE      shift and go to state 16
+    METRIC_NAME     shift and go to state 17
+    AGGREGATION_OPERATOR shift and go to state 18
+    FUNCTION        shift and go to state 19
+
+    vectorOperation                shift and go to state 74
+    vector                         shift and go to state 2
+    unaryOp                        shift and go to state 3
+    parens                         shift and go to state 4
+    literal                        shift and go to state 5
+    offset                         shift and go to state 6
+    matrixSelector                 shift and go to state 7
+    instantSelector                shift and go to state 8
+    aggregation                    shift and go to state 9
+    function                       shift and go to state 10
+
+state 23
+
+    (5) vectorOperation -> vectorOperation addOp . vectorOperation
+    (1) vectorOperation -> . vector
+    (2) vectorOperation -> . vectorOperation orOp vectorOperation
+    (3) vectorOperation -> . vectorOperation andUnlessOp vectorOperation
+    (4) vectorOperation -> . vectorOperation compareOp vectorOperation
+    (5) vectorOperation -> . vectorOperation addOp vectorOperation
+    (6) vectorOperation -> . vectorOperation multOp vectorOperation
+    (7) vectorOperation -> . unaryOp vectorOperation
+    (8) vectorOperation -> . vectorOperation powOp vectorOperation
+    (39) vector -> . parens
+    (40) vector -> . literal
+    (41) vector -> . offset
+    (42) vector -> . matrixSelector
+    (43) vector -> . instantSelector
+    (44) vector -> . aggregation
+    (45) vector -> . function
+    (9) unaryOp -> . SUB
+    (10) unaryOp -> . ADD
+    (46) parens -> . LEFT_PAREN vectorOperation RIGHT_PAREN
+    (100) literal -> . STRING
+    (101) literal -> . NUMBER
+    (58) offset -> . matrixSelector OFFSET DURATION
+    (59) offset -> . instantSelector OFFSET DURATION
+    (57) matrixSelector -> . instantSelector TIME_RANGE
+    (47) instantSelector -> . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (48) instantSelector -> . METRIC_NAME
+    (49) instantSelector -> . METRIC_NAME LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> . METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (66) aggregation -> . AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+    (67) aggregation -> . AGGREGATION_OPERATOR parameterList BY labelNameList
+    (68) aggregation -> . AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+    (69) aggregation -> . AGGREGATION_OPERATOR BY labelNameList parameterList
+    (70) aggregation -> . AGGREGATION_OPERATOR parameterList
+    (60) function -> . FUNCTION parameterList
+    SUB             shift and go to state 11
+    ADD             shift and go to state 12
+    LEFT_PAREN      shift and go to state 13
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 15
+    LEFT_BRACE      shift and go to state 16
+    METRIC_NAME     shift and go to state 17
+    AGGREGATION_OPERATOR shift and go to state 18
+    FUNCTION        shift and go to state 19
+
+    vectorOperation                shift and go to state 75
+    vector                         shift and go to state 2
+    unaryOp                        shift and go to state 3
+    parens                         shift and go to state 4
+    literal                        shift and go to state 5
+    offset                         shift and go to state 6
+    matrixSelector                 shift and go to state 7
+    instantSelector                shift and go to state 8
+    aggregation                    shift and go to state 9
+    function                       shift and go to state 10
+
+state 24
+
+    (6) vectorOperation -> vectorOperation multOp . vectorOperation
+    (1) vectorOperation -> . vector
+    (2) vectorOperation -> . vectorOperation orOp vectorOperation
+    (3) vectorOperation -> . vectorOperation andUnlessOp vectorOperation
+    (4) vectorOperation -> . vectorOperation compareOp vectorOperation
+    (5) vectorOperation -> . vectorOperation addOp vectorOperation
+    (6) vectorOperation -> . vectorOperation multOp vectorOperation
+    (7) vectorOperation -> . unaryOp vectorOperation
+    (8) vectorOperation -> . vectorOperation powOp vectorOperation
+    (39) vector -> . parens
+    (40) vector -> . literal
+    (41) vector -> . offset
+    (42) vector -> . matrixSelector
+    (43) vector -> . instantSelector
+    (44) vector -> . aggregation
+    (45) vector -> . function
+    (9) unaryOp -> . SUB
+    (10) unaryOp -> . ADD
+    (46) parens -> . LEFT_PAREN vectorOperation RIGHT_PAREN
+    (100) literal -> . STRING
+    (101) literal -> . NUMBER
+    (58) offset -> . matrixSelector OFFSET DURATION
+    (59) offset -> . instantSelector OFFSET DURATION
+    (57) matrixSelector -> . instantSelector TIME_RANGE
+    (47) instantSelector -> . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (48) instantSelector -> . METRIC_NAME
+    (49) instantSelector -> . METRIC_NAME LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> . METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (66) aggregation -> . AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+    (67) aggregation -> . AGGREGATION_OPERATOR parameterList BY labelNameList
+    (68) aggregation -> . AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+    (69) aggregation -> . AGGREGATION_OPERATOR BY labelNameList parameterList
+    (70) aggregation -> . AGGREGATION_OPERATOR parameterList
+    (60) function -> . FUNCTION parameterList
+    SUB             shift and go to state 11
+    ADD             shift and go to state 12
+    LEFT_PAREN      shift and go to state 13
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 15
+    LEFT_BRACE      shift and go to state 16
+    METRIC_NAME     shift and go to state 17
+    AGGREGATION_OPERATOR shift and go to state 18
+    FUNCTION        shift and go to state 19
+
+    vectorOperation                shift and go to state 76
+    vector                         shift and go to state 2
+    unaryOp                        shift and go to state 3
+    parens                         shift and go to state 4
+    literal                        shift and go to state 5
+    offset                         shift and go to state 6
+    matrixSelector                 shift and go to state 7
+    instantSelector                shift and go to state 8
+    aggregation                    shift and go to state 9
+    function                       shift and go to state 10
+
+state 25
+
+    (8) vectorOperation -> vectorOperation powOp . vectorOperation
+    (1) vectorOperation -> . vector
+    (2) vectorOperation -> . vectorOperation orOp vectorOperation
+    (3) vectorOperation -> . vectorOperation andUnlessOp vectorOperation
+    (4) vectorOperation -> . vectorOperation compareOp vectorOperation
+    (5) vectorOperation -> . vectorOperation addOp vectorOperation
+    (6) vectorOperation -> . vectorOperation multOp vectorOperation
+    (7) vectorOperation -> . unaryOp vectorOperation
+    (8) vectorOperation -> . vectorOperation powOp vectorOperation
+    (39) vector -> . parens
+    (40) vector -> . literal
+    (41) vector -> . offset
+    (42) vector -> . matrixSelector
+    (43) vector -> . instantSelector
+    (44) vector -> . aggregation
+    (45) vector -> . function
+    (9) unaryOp -> . SUB
+    (10) unaryOp -> . ADD
+    (46) parens -> . LEFT_PAREN vectorOperation RIGHT_PAREN
+    (100) literal -> . STRING
+    (101) literal -> . NUMBER
+    (58) offset -> . matrixSelector OFFSET DURATION
+    (59) offset -> . instantSelector OFFSET DURATION
+    (57) matrixSelector -> . instantSelector TIME_RANGE
+    (47) instantSelector -> . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (48) instantSelector -> . METRIC_NAME
+    (49) instantSelector -> . METRIC_NAME LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> . METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (66) aggregation -> . AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+    (67) aggregation -> . AGGREGATION_OPERATOR parameterList BY labelNameList
+    (68) aggregation -> . AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+    (69) aggregation -> . AGGREGATION_OPERATOR BY labelNameList parameterList
+    (70) aggregation -> . AGGREGATION_OPERATOR parameterList
+    (60) function -> . FUNCTION parameterList
+    SUB             shift and go to state 11
+    ADD             shift and go to state 12
+    LEFT_PAREN      shift and go to state 13
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 15
+    LEFT_BRACE      shift and go to state 16
+    METRIC_NAME     shift and go to state 17
+    AGGREGATION_OPERATOR shift and go to state 18
+    FUNCTION        shift and go to state 19
+
+    vectorOperation                shift and go to state 77
+    vector                         shift and go to state 2
+    unaryOp                        shift and go to state 3
+    parens                         shift and go to state 4
+    literal                        shift and go to state 5
+    offset                         shift and go to state 6
+    matrixSelector                 shift and go to state 7
+    instantSelector                shift and go to state 8
+    aggregation                    shift and go to state 9
+    function                       shift and go to state 10
+
+state 26
+
+    (37) orOp -> OR .
+    (38) orOp -> OR . grouping
+    (71) grouping -> . ignoring
+    (72) grouping -> . on
+    (73) grouping -> . ignoring groupRight
+    (74) grouping -> . ignoring groupLeft
+    (75) grouping -> . on groupRight
+    (76) grouping -> . on groupLeft
+    (78) ignoring -> . IGNORING labelNameList
+    (77) on -> . ON labelNameList
+    SUB             reduce using rule 37 (orOp -> OR .)
+    ADD             reduce using rule 37 (orOp -> OR .)
+    LEFT_PAREN      reduce using rule 37 (orOp -> OR .)
+    STRING          reduce using rule 37 (orOp -> OR .)
+    NUMBER          reduce using rule 37 (orOp -> OR .)
+    LEFT_BRACE      reduce using rule 37 (orOp -> OR .)
+    METRIC_NAME     reduce using rule 37 (orOp -> OR .)
+    AGGREGATION_OPERATOR reduce using rule 37 (orOp -> OR .)
+    FUNCTION        reduce using rule 37 (orOp -> OR .)
+    IGNORING        shift and go to state 81
+    ON              shift and go to state 82
+
+    grouping                       shift and go to state 78
+    ignoring                       shift and go to state 79
+    on                             shift and go to state 80
+
+state 27
+
+    (33) andUnlessOp -> UNLESS .
+    (35) andUnlessOp -> UNLESS . grouping
+    (71) grouping -> . ignoring
+    (72) grouping -> . on
+    (73) grouping -> . ignoring groupRight
+    (74) grouping -> . ignoring groupLeft
+    (75) grouping -> . on groupRight
+    (76) grouping -> . on groupLeft
+    (78) ignoring -> . IGNORING labelNameList
+    (77) on -> . ON labelNameList
+    SUB             reduce using rule 33 (andUnlessOp -> UNLESS .)
+    ADD             reduce using rule 33 (andUnlessOp -> UNLESS .)
+    LEFT_PAREN      reduce using rule 33 (andUnlessOp -> UNLESS .)
+    STRING          reduce using rule 33 (andUnlessOp -> UNLESS .)
+    NUMBER          reduce using rule 33 (andUnlessOp -> UNLESS .)
+    LEFT_BRACE      reduce using rule 33 (andUnlessOp -> UNLESS .)
+    METRIC_NAME     reduce using rule 33 (andUnlessOp -> UNLESS .)
+    AGGREGATION_OPERATOR reduce using rule 33 (andUnlessOp -> UNLESS .)
+    FUNCTION        reduce using rule 33 (andUnlessOp -> UNLESS .)
+    IGNORING        shift and go to state 81
+    ON              shift and go to state 82
+
+    grouping                       shift and go to state 83
+    ignoring                       shift and go to state 79
+    on                             shift and go to state 80
+
+state 28
+
+    (34) andUnlessOp -> AND .
+    (36) andUnlessOp -> AND . grouping
+    (71) grouping -> . ignoring
+    (72) grouping -> . on
+    (73) grouping -> . ignoring groupRight
+    (74) grouping -> . ignoring groupLeft
+    (75) grouping -> . on groupRight
+    (76) grouping -> . on groupLeft
+    (78) ignoring -> . IGNORING labelNameList
+    (77) on -> . ON labelNameList
+    SUB             reduce using rule 34 (andUnlessOp -> AND .)
+    ADD             reduce using rule 34 (andUnlessOp -> AND .)
+    LEFT_PAREN      reduce using rule 34 (andUnlessOp -> AND .)
+    STRING          reduce using rule 34 (andUnlessOp -> AND .)
+    NUMBER          reduce using rule 34 (andUnlessOp -> AND .)
+    LEFT_BRACE      reduce using rule 34 (andUnlessOp -> AND .)
+    METRIC_NAME     reduce using rule 34 (andUnlessOp -> AND .)
+    AGGREGATION_OPERATOR reduce using rule 34 (andUnlessOp -> AND .)
+    FUNCTION        reduce using rule 34 (andUnlessOp -> AND .)
+    IGNORING        shift and go to state 81
+    ON              shift and go to state 82
+
+    grouping                       shift and go to state 84
+    ignoring                       shift and go to state 79
+    on                             shift and go to state 80
+
+state 29
+
+    (23) compareOp -> compareOps .
+    (24) compareOp -> compareOps . BOOL
+    (25) compareOp -> compareOps . grouping
+    (26) compareOp -> compareOps . BOOL grouping
+    (71) grouping -> . ignoring
+    (72) grouping -> . on
+    (73) grouping -> . ignoring groupRight
+    (74) grouping -> . ignoring groupLeft
+    (75) grouping -> . on groupRight
+    (76) grouping -> . on groupLeft
+    (78) ignoring -> . IGNORING labelNameList
+    (77) on -> . ON labelNameList
+    SUB             reduce using rule 23 (compareOp -> compareOps .)
+    ADD             reduce using rule 23 (compareOp -> compareOps .)
+    LEFT_PAREN      reduce using rule 23 (compareOp -> compareOps .)
+    STRING          reduce using rule 23 (compareOp -> compareOps .)
+    NUMBER          reduce using rule 23 (compareOp -> compareOps .)
+    LEFT_BRACE      reduce using rule 23 (compareOp -> compareOps .)
+    METRIC_NAME     reduce using rule 23 (compareOp -> compareOps .)
+    AGGREGATION_OPERATOR reduce using rule 23 (compareOp -> compareOps .)
+    FUNCTION        reduce using rule 23 (compareOp -> compareOps .)
+    BOOL            shift and go to state 85
+    IGNORING        shift and go to state 81
+    ON              shift and go to state 82
+
+    grouping                       shift and go to state 86
+    ignoring                       shift and go to state 79
+    on                             shift and go to state 80
+
+state 30
+
+    (19) addOp -> SUB .
+    (21) addOp -> SUB . grouping
+    (71) grouping -> . ignoring
+    (72) grouping -> . on
+    (73) grouping -> . ignoring groupRight
+    (74) grouping -> . ignoring groupLeft
+    (75) grouping -> . on groupRight
+    (76) grouping -> . on groupLeft
+    (78) ignoring -> . IGNORING labelNameList
+    (77) on -> . ON labelNameList
+    SUB             reduce using rule 19 (addOp -> SUB .)
+    ADD             reduce using rule 19 (addOp -> SUB .)
+    LEFT_PAREN      reduce using rule 19 (addOp -> SUB .)
+    STRING          reduce using rule 19 (addOp -> SUB .)
+    NUMBER          reduce using rule 19 (addOp -> SUB .)
+    LEFT_BRACE      reduce using rule 19 (addOp -> SUB .)
+    METRIC_NAME     reduce using rule 19 (addOp -> SUB .)
+    AGGREGATION_OPERATOR reduce using rule 19 (addOp -> SUB .)
+    FUNCTION        reduce using rule 19 (addOp -> SUB .)
+    IGNORING        shift and go to state 81
+    ON              shift and go to state 82
+
+    grouping                       shift and go to state 87
+    ignoring                       shift and go to state 79
+    on                             shift and go to state 80
+
+state 31
+
+    (20) addOp -> ADD .
+    (22) addOp -> ADD . grouping
+    (71) grouping -> . ignoring
+    (72) grouping -> . on
+    (73) grouping -> . ignoring groupRight
+    (74) grouping -> . ignoring groupLeft
+    (75) grouping -> . on groupRight
+    (76) grouping -> . on groupLeft
+    (78) ignoring -> . IGNORING labelNameList
+    (77) on -> . ON labelNameList
+    SUB             reduce using rule 20 (addOp -> ADD .)
+    ADD             reduce using rule 20 (addOp -> ADD .)
+    LEFT_PAREN      reduce using rule 20 (addOp -> ADD .)
+    STRING          reduce using rule 20 (addOp -> ADD .)
+    NUMBER          reduce using rule 20 (addOp -> ADD .)
+    LEFT_BRACE      reduce using rule 20 (addOp -> ADD .)
+    METRIC_NAME     reduce using rule 20 (addOp -> ADD .)
+    AGGREGATION_OPERATOR reduce using rule 20 (addOp -> ADD .)
+    FUNCTION        reduce using rule 20 (addOp -> ADD .)
+    IGNORING        shift and go to state 81
+    ON              shift and go to state 82
+
+    grouping                       shift and go to state 88
+    ignoring                       shift and go to state 79
+    on                             shift and go to state 80
+
+state 32
+
+    (13) multOp -> MOD .
+    (16) multOp -> MOD . grouping
+    (71) grouping -> . ignoring
+    (72) grouping -> . on
+    (73) grouping -> . ignoring groupRight
+    (74) grouping -> . ignoring groupLeft
+    (75) grouping -> . on groupRight
+    (76) grouping -> . on groupLeft
+    (78) ignoring -> . IGNORING labelNameList
+    (77) on -> . ON labelNameList
+    SUB             reduce using rule 13 (multOp -> MOD .)
+    ADD             reduce using rule 13 (multOp -> MOD .)
+    LEFT_PAREN      reduce using rule 13 (multOp -> MOD .)
+    STRING          reduce using rule 13 (multOp -> MOD .)
+    NUMBER          reduce using rule 13 (multOp -> MOD .)
+    LEFT_BRACE      reduce using rule 13 (multOp -> MOD .)
+    METRIC_NAME     reduce using rule 13 (multOp -> MOD .)
+    AGGREGATION_OPERATOR reduce using rule 13 (multOp -> MOD .)
+    FUNCTION        reduce using rule 13 (multOp -> MOD .)
+    IGNORING        shift and go to state 81
+    ON              shift and go to state 82
+
+    grouping                       shift and go to state 89
+    ignoring                       shift and go to state 79
+    on                             shift and go to state 80
+
+state 33
+
+    (14) multOp -> DIV .
+    (17) multOp -> DIV . grouping
+    (71) grouping -> . ignoring
+    (72) grouping -> . on
+    (73) grouping -> . ignoring groupRight
+    (74) grouping -> . ignoring groupLeft
+    (75) grouping -> . on groupRight
+    (76) grouping -> . on groupLeft
+    (78) ignoring -> . IGNORING labelNameList
+    (77) on -> . ON labelNameList
+    SUB             reduce using rule 14 (multOp -> DIV .)
+    ADD             reduce using rule 14 (multOp -> DIV .)
+    LEFT_PAREN      reduce using rule 14 (multOp -> DIV .)
+    STRING          reduce using rule 14 (multOp -> DIV .)
+    NUMBER          reduce using rule 14 (multOp -> DIV .)
+    LEFT_BRACE      reduce using rule 14 (multOp -> DIV .)
+    METRIC_NAME     reduce using rule 14 (multOp -> DIV .)
+    AGGREGATION_OPERATOR reduce using rule 14 (multOp -> DIV .)
+    FUNCTION        reduce using rule 14 (multOp -> DIV .)
+    IGNORING        shift and go to state 81
+    ON              shift and go to state 82
+
+    grouping                       shift and go to state 90
+    ignoring                       shift and go to state 79
+    on                             shift and go to state 80
+
+state 34
+
+    (15) multOp -> MULT .
+    (18) multOp -> MULT . grouping
+    (71) grouping -> . ignoring
+    (72) grouping -> . on
+    (73) grouping -> . ignoring groupRight
+    (74) grouping -> . ignoring groupLeft
+    (75) grouping -> . on groupRight
+    (76) grouping -> . on groupLeft
+    (78) ignoring -> . IGNORING labelNameList
+    (77) on -> . ON labelNameList
+    SUB             reduce using rule 15 (multOp -> MULT .)
+    ADD             reduce using rule 15 (multOp -> MULT .)
+    LEFT_PAREN      reduce using rule 15 (multOp -> MULT .)
+    STRING          reduce using rule 15 (multOp -> MULT .)
+    NUMBER          reduce using rule 15 (multOp -> MULT .)
+    LEFT_BRACE      reduce using rule 15 (multOp -> MULT .)
+    METRIC_NAME     reduce using rule 15 (multOp -> MULT .)
+    AGGREGATION_OPERATOR reduce using rule 15 (multOp -> MULT .)
+    FUNCTION        reduce using rule 15 (multOp -> MULT .)
+    IGNORING        shift and go to state 81
+    ON              shift and go to state 82
+
+    grouping                       shift and go to state 91
+    ignoring                       shift and go to state 79
+    on                             shift and go to state 80
+
+state 35
+
+    (11) powOp -> POW .
+    (12) powOp -> POW . grouping
+    (71) grouping -> . ignoring
+    (72) grouping -> . on
+    (73) grouping -> . ignoring groupRight
+    (74) grouping -> . ignoring groupLeft
+    (75) grouping -> . on groupRight
+    (76) grouping -> . on groupLeft
+    (78) ignoring -> . IGNORING labelNameList
+    (77) on -> . ON labelNameList
+    SUB             reduce using rule 11 (powOp -> POW .)
+    ADD             reduce using rule 11 (powOp -> POW .)
+    LEFT_PAREN      reduce using rule 11 (powOp -> POW .)
+    STRING          reduce using rule 11 (powOp -> POW .)
+    NUMBER          reduce using rule 11 (powOp -> POW .)
+    LEFT_BRACE      reduce using rule 11 (powOp -> POW .)
+    METRIC_NAME     reduce using rule 11 (powOp -> POW .)
+    AGGREGATION_OPERATOR reduce using rule 11 (powOp -> POW .)
+    FUNCTION        reduce using rule 11 (powOp -> POW .)
+    IGNORING        shift and go to state 81
+    ON              shift and go to state 82
+
+    grouping                       shift and go to state 92
+    ignoring                       shift and go to state 79
+    on                             shift and go to state 80
+
+state 36
+
+    (27) compareOps -> LE .
+    BOOL            reduce using rule 27 (compareOps -> LE .)
+    IGNORING        reduce using rule 27 (compareOps -> LE .)
+    ON              reduce using rule 27 (compareOps -> LE .)
+    SUB             reduce using rule 27 (compareOps -> LE .)
+    ADD             reduce using rule 27 (compareOps -> LE .)
+    LEFT_PAREN      reduce using rule 27 (compareOps -> LE .)
+    STRING          reduce using rule 27 (compareOps -> LE .)
+    NUMBER          reduce using rule 27 (compareOps -> LE .)
+    LEFT_BRACE      reduce using rule 27 (compareOps -> LE .)
+    METRIC_NAME     reduce using rule 27 (compareOps -> LE .)
+    AGGREGATION_OPERATOR reduce using rule 27 (compareOps -> LE .)
+    FUNCTION        reduce using rule 27 (compareOps -> LE .)
+
+
+state 37
+
+    (28) compareOps -> GE .
+    BOOL            reduce using rule 28 (compareOps -> GE .)
+    IGNORING        reduce using rule 28 (compareOps -> GE .)
+    ON              reduce using rule 28 (compareOps -> GE .)
+    SUB             reduce using rule 28 (compareOps -> GE .)
+    ADD             reduce using rule 28 (compareOps -> GE .)
+    LEFT_PAREN      reduce using rule 28 (compareOps -> GE .)
+    STRING          reduce using rule 28 (compareOps -> GE .)
+    NUMBER          reduce using rule 28 (compareOps -> GE .)
+    LEFT_BRACE      reduce using rule 28 (compareOps -> GE .)
+    METRIC_NAME     reduce using rule 28 (compareOps -> GE .)
+    AGGREGATION_OPERATOR reduce using rule 28 (compareOps -> GE .)
+    FUNCTION        reduce using rule 28 (compareOps -> GE .)
+
+
+state 38
+
+    (29) compareOps -> LT .
+    BOOL            reduce using rule 29 (compareOps -> LT .)
+    IGNORING        reduce using rule 29 (compareOps -> LT .)
+    ON              reduce using rule 29 (compareOps -> LT .)
+    SUB             reduce using rule 29 (compareOps -> LT .)
+    ADD             reduce using rule 29 (compareOps -> LT .)
+    LEFT_PAREN      reduce using rule 29 (compareOps -> LT .)
+    STRING          reduce using rule 29 (compareOps -> LT .)
+    NUMBER          reduce using rule 29 (compareOps -> LT .)
+    LEFT_BRACE      reduce using rule 29 (compareOps -> LT .)
+    METRIC_NAME     reduce using rule 29 (compareOps -> LT .)
+    AGGREGATION_OPERATOR reduce using rule 29 (compareOps -> LT .)
+    FUNCTION        reduce using rule 29 (compareOps -> LT .)
+
+
+state 39
+
+    (30) compareOps -> GT .
+    BOOL            reduce using rule 30 (compareOps -> GT .)
+    IGNORING        reduce using rule 30 (compareOps -> GT .)
+    ON              reduce using rule 30 (compareOps -> GT .)
+    SUB             reduce using rule 30 (compareOps -> GT .)
+    ADD             reduce using rule 30 (compareOps -> GT .)
+    LEFT_PAREN      reduce using rule 30 (compareOps -> GT .)
+    STRING          reduce using rule 30 (compareOps -> GT .)
+    NUMBER          reduce using rule 30 (compareOps -> GT .)
+    LEFT_BRACE      reduce using rule 30 (compareOps -> GT .)
+    METRIC_NAME     reduce using rule 30 (compareOps -> GT .)
+    AGGREGATION_OPERATOR reduce using rule 30 (compareOps -> GT .)
+    FUNCTION        reduce using rule 30 (compareOps -> GT .)
+
+
+state 40
+
+    (31) compareOps -> NE .
+    BOOL            reduce using rule 31 (compareOps -> NE .)
+    IGNORING        reduce using rule 31 (compareOps -> NE .)
+    ON              reduce using rule 31 (compareOps -> NE .)
+    SUB             reduce using rule 31 (compareOps -> NE .)
+    ADD             reduce using rule 31 (compareOps -> NE .)
+    LEFT_PAREN      reduce using rule 31 (compareOps -> NE .)
+    STRING          reduce using rule 31 (compareOps -> NE .)
+    NUMBER          reduce using rule 31 (compareOps -> NE .)
+    LEFT_BRACE      reduce using rule 31 (compareOps -> NE .)
+    METRIC_NAME     reduce using rule 31 (compareOps -> NE .)
+    AGGREGATION_OPERATOR reduce using rule 31 (compareOps -> NE .)
+    FUNCTION        reduce using rule 31 (compareOps -> NE .)
+
+
+state 41
+
+    (32) compareOps -> DEQ .
+    BOOL            reduce using rule 32 (compareOps -> DEQ .)
+    IGNORING        reduce using rule 32 (compareOps -> DEQ .)
+    ON              reduce using rule 32 (compareOps -> DEQ .)
+    SUB             reduce using rule 32 (compareOps -> DEQ .)
+    ADD             reduce using rule 32 (compareOps -> DEQ .)
+    LEFT_PAREN      reduce using rule 32 (compareOps -> DEQ .)
+    STRING          reduce using rule 32 (compareOps -> DEQ .)
+    NUMBER          reduce using rule 32 (compareOps -> DEQ .)
+    LEFT_BRACE      reduce using rule 32 (compareOps -> DEQ .)
+    METRIC_NAME     reduce using rule 32 (compareOps -> DEQ .)
+    AGGREGATION_OPERATOR reduce using rule 32 (compareOps -> DEQ .)
+    FUNCTION        reduce using rule 32 (compareOps -> DEQ .)
+
+
+state 42
+
+    (7) vectorOperation -> unaryOp vectorOperation .
+    (2) vectorOperation -> vectorOperation . orOp vectorOperation
+    (3) vectorOperation -> vectorOperation . andUnlessOp vectorOperation
+    (4) vectorOperation -> vectorOperation . compareOp vectorOperation
+    (5) vectorOperation -> vectorOperation . addOp vectorOperation
+    (6) vectorOperation -> vectorOperation . multOp vectorOperation
+    (8) vectorOperation -> vectorOperation . powOp vectorOperation
+    (37) orOp -> . OR
+    (38) orOp -> . OR grouping
+    (33) andUnlessOp -> . UNLESS
+    (34) andUnlessOp -> . AND
+    (35) andUnlessOp -> . UNLESS grouping
+    (36) andUnlessOp -> . AND grouping
+    (23) compareOp -> . compareOps
+    (24) compareOp -> . compareOps BOOL
+    (25) compareOp -> . compareOps grouping
+    (26) compareOp -> . compareOps BOOL grouping
+    (19) addOp -> . SUB
+    (20) addOp -> . ADD
+    (21) addOp -> . SUB grouping
+    (22) addOp -> . ADD grouping
+    (13) multOp -> . MOD
+    (14) multOp -> . DIV
+    (15) multOp -> . MULT
+    (16) multOp -> . MOD grouping
+    (17) multOp -> . DIV grouping
+    (18) multOp -> . MULT grouping
+    (11) powOp -> . POW
+    (12) powOp -> . POW grouping
+    (27) compareOps -> . LE
+    (28) compareOps -> . GE
+    (29) compareOps -> . LT
+    (30) compareOps -> . GT
+    (31) compareOps -> . NE
+    (32) compareOps -> . DEQ
+    OR              reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    UNLESS          reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    AND             reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    SUB             reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    ADD             reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    MOD             reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    DIV             reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    MULT            reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    LE              reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    GE              reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    LT              reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    GT              reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    NE              reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    DEQ             reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    $end            reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    RIGHT_PAREN     reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    COMMA           reduce using rule 7 (vectorOperation -> unaryOp vectorOperation .)
+    POW             shift and go to state 35
+
+    orOp                           shift and go to state 20
+    andUnlessOp                    shift and go to state 21
+    compareOp                      shift and go to state 22
+    addOp                          shift and go to state 23
+    multOp                         shift and go to state 24
+    powOp                          shift and go to state 25
+    compareOps                     shift and go to state 29
+
+state 43
+
+    (58) offset -> matrixSelector OFFSET . DURATION
+    DURATION        shift and go to state 93
+
+
+state 44
+
+    (59) offset -> instantSelector OFFSET . DURATION
+    DURATION        shift and go to state 94
+
+
+state 45
+
+    (57) matrixSelector -> instantSelector TIME_RANGE .
+    OFFSET          reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    OR              reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    UNLESS          reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    AND             reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    SUB             reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    ADD             reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    MOD             reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    DIV             reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    MULT            reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    POW             reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    LE              reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    GE              reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    LT              reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    GT              reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    NE              reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    DEQ             reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    $end            reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    RIGHT_PAREN     reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+    COMMA           reduce using rule 57 (matrixSelector -> instantSelector TIME_RANGE .)
+
+
+state 46
+
+    (46) parens -> LEFT_PAREN vectorOperation . RIGHT_PAREN
+    (2) vectorOperation -> vectorOperation . orOp vectorOperation
+    (3) vectorOperation -> vectorOperation . andUnlessOp vectorOperation
+    (4) vectorOperation -> vectorOperation . compareOp vectorOperation
+    (5) vectorOperation -> vectorOperation . addOp vectorOperation
+    (6) vectorOperation -> vectorOperation . multOp vectorOperation
+    (8) vectorOperation -> vectorOperation . powOp vectorOperation
+    (37) orOp -> . OR
+    (38) orOp -> . OR grouping
+    (33) andUnlessOp -> . UNLESS
+    (34) andUnlessOp -> . AND
+    (35) andUnlessOp -> . UNLESS grouping
+    (36) andUnlessOp -> . AND grouping
+    (23) compareOp -> . compareOps
+    (24) compareOp -> . compareOps BOOL
+    (25) compareOp -> . compareOps grouping
+    (26) compareOp -> . compareOps BOOL grouping
+    (19) addOp -> . SUB
+    (20) addOp -> . ADD
+    (21) addOp -> . SUB grouping
+    (22) addOp -> . ADD grouping
+    (13) multOp -> . MOD
+    (14) multOp -> . DIV
+    (15) multOp -> . MULT
+    (16) multOp -> . MOD grouping
+    (17) multOp -> . DIV grouping
+    (18) multOp -> . MULT grouping
+    (11) powOp -> . POW
+    (12) powOp -> . POW grouping
+    (27) compareOps -> . LE
+    (28) compareOps -> . GE
+    (29) compareOps -> . LT
+    (30) compareOps -> . GT
+    (31) compareOps -> . NE
+    (32) compareOps -> . DEQ
+    RIGHT_PAREN     shift and go to state 95
+    OR              shift and go to state 26
+    UNLESS          shift and go to state 27
+    AND             shift and go to state 28
+    SUB             shift and go to state 30
+    ADD             shift and go to state 31
+    MOD             shift and go to state 32
+    DIV             shift and go to state 33
+    MULT            shift and go to state 34
+    POW             shift and go to state 35
+    LE              shift and go to state 36
+    GE              shift and go to state 37
+    LT              shift and go to state 38
+    GT              shift and go to state 39
+    NE              shift and go to state 40
+    DEQ             shift and go to state 41
+
+    orOp                           shift and go to state 20
+    andUnlessOp                    shift and go to state 21
+    compareOp                      shift and go to state 22
+    addOp                          shift and go to state 23
+    multOp                         shift and go to state 24
+    powOp                          shift and go to state 25
+    compareOps                     shift and go to state 29
+
+state 47
+
+    (47) instantSelector -> LEFT_BRACE labelMatcherList . RIGHT_BRACE
+    RIGHT_BRACE     shift and go to state 96
+
+
+state 48
+
+    (55) labelMatcherList -> labelMatcher .
+    (56) labelMatcherList -> labelMatcher . COMMA labelMatcherList
+    RIGHT_BRACE     reduce using rule 55 (labelMatcherList -> labelMatcher .)
+    COMMA           shift and go to state 97
+
+
+state 49
+
+    (51) labelMatcher -> labelName . NRE STRING
+    (52) labelMatcher -> labelName . RE STRING
+    (53) labelMatcher -> labelName . NE STRING
+    (54) labelMatcher -> labelName . EQ STRING
+    NRE             shift and go to state 98
+    RE              shift and go to state 99
+    NE              shift and go to state 100
+    EQ              shift and go to state 101
+
+
+state 50
+
+    (81) labelName -> LABEL_NAME .
+    NRE             reduce using rule 81 (labelName -> LABEL_NAME .)
+    RE              reduce using rule 81 (labelName -> LABEL_NAME .)
+    NE              reduce using rule 81 (labelName -> LABEL_NAME .)
+    EQ              reduce using rule 81 (labelName -> LABEL_NAME .)
+    COMMA           reduce using rule 81 (labelName -> LABEL_NAME .)
+    RIGHT_PAREN     reduce using rule 81 (labelName -> LABEL_NAME .)
+
+
+state 51
+
+    (82) labelName -> METRIC_NAME .
+    NRE             reduce using rule 82 (labelName -> METRIC_NAME .)
+    RE              reduce using rule 82 (labelName -> METRIC_NAME .)
+    NE              reduce using rule 82 (labelName -> METRIC_NAME .)
+    EQ              reduce using rule 82 (labelName -> METRIC_NAME .)
+    COMMA           reduce using rule 82 (labelName -> METRIC_NAME .)
+    RIGHT_PAREN     reduce using rule 82 (labelName -> METRIC_NAME .)
+
+
+state 52
+
+    (83) labelName -> keyword .
+    NRE             reduce using rule 83 (labelName -> keyword .)
+    RE              reduce using rule 83 (labelName -> keyword .)
+    NE              reduce using rule 83 (labelName -> keyword .)
+    EQ              reduce using rule 83 (labelName -> keyword .)
+    COMMA           reduce using rule 83 (labelName -> keyword .)
+    RIGHT_PAREN     reduce using rule 83 (labelName -> keyword .)
+
+
+state 53
+
+    (87) keyword -> FUNCTION .
+    NRE             reduce using rule 87 (keyword -> FUNCTION .)
+    RE              reduce using rule 87 (keyword -> FUNCTION .)
+    NE              reduce using rule 87 (keyword -> FUNCTION .)
+    EQ              reduce using rule 87 (keyword -> FUNCTION .)
+    COMMA           reduce using rule 87 (keyword -> FUNCTION .)
+    RIGHT_PAREN     reduce using rule 87 (keyword -> FUNCTION .)
+
+
+state 54
+
+    (88) keyword -> AGGREGATION_OPERATOR .
+    NRE             reduce using rule 88 (keyword -> AGGREGATION_OPERATOR .)
+    RE              reduce using rule 88 (keyword -> AGGREGATION_OPERATOR .)
+    NE              reduce using rule 88 (keyword -> AGGREGATION_OPERATOR .)
+    EQ              reduce using rule 88 (keyword -> AGGREGATION_OPERATOR .)
+    COMMA           reduce using rule 88 (keyword -> AGGREGATION_OPERATOR .)
+    RIGHT_PAREN     reduce using rule 88 (keyword -> AGGREGATION_OPERATOR .)
+
+
+state 55
+
+    (89) keyword -> BOOL .
+    NRE             reduce using rule 89 (keyword -> BOOL .)
+    RE              reduce using rule 89 (keyword -> BOOL .)
+    NE              reduce using rule 89 (keyword -> BOOL .)
+    EQ              reduce using rule 89 (keyword -> BOOL .)
+    COMMA           reduce using rule 89 (keyword -> BOOL .)
+    RIGHT_PAREN     reduce using rule 89 (keyword -> BOOL .)
+
+
+state 56
+
+    (90) keyword -> OFFSET .
+    NRE             reduce using rule 90 (keyword -> OFFSET .)
+    RE              reduce using rule 90 (keyword -> OFFSET .)
+    NE              reduce using rule 90 (keyword -> OFFSET .)
+    EQ              reduce using rule 90 (keyword -> OFFSET .)
+    COMMA           reduce using rule 90 (keyword -> OFFSET .)
+    RIGHT_PAREN     reduce using rule 90 (keyword -> OFFSET .)
+
+
+state 57
+
+    (91) keyword -> GROUP_RIGHT .
+    NRE             reduce using rule 91 (keyword -> GROUP_RIGHT .)
+    RE              reduce using rule 91 (keyword -> GROUP_RIGHT .)
+    NE              reduce using rule 91 (keyword -> GROUP_RIGHT .)
+    EQ              reduce using rule 91 (keyword -> GROUP_RIGHT .)
+    COMMA           reduce using rule 91 (keyword -> GROUP_RIGHT .)
+    RIGHT_PAREN     reduce using rule 91 (keyword -> GROUP_RIGHT .)
+
+
+state 58
+
+    (92) keyword -> GROUP_LEFT .
+    NRE             reduce using rule 92 (keyword -> GROUP_LEFT .)
+    RE              reduce using rule 92 (keyword -> GROUP_LEFT .)
+    NE              reduce using rule 92 (keyword -> GROUP_LEFT .)
+    EQ              reduce using rule 92 (keyword -> GROUP_LEFT .)
+    COMMA           reduce using rule 92 (keyword -> GROUP_LEFT .)
+    RIGHT_PAREN     reduce using rule 92 (keyword -> GROUP_LEFT .)
+
+
+state 59
+
+    (93) keyword -> IGNORING .
+    NRE             reduce using rule 93 (keyword -> IGNORING .)
+    RE              reduce using rule 93 (keyword -> IGNORING .)
+    NE              reduce using rule 93 (keyword -> IGNORING .)
+    EQ              reduce using rule 93 (keyword -> IGNORING .)
+    COMMA           reduce using rule 93 (keyword -> IGNORING .)
+    RIGHT_PAREN     reduce using rule 93 (keyword -> IGNORING .)
+
+
+state 60
+
+    (94) keyword -> ON .
+    NRE             reduce using rule 94 (keyword -> ON .)
+    RE              reduce using rule 94 (keyword -> ON .)
+    NE              reduce using rule 94 (keyword -> ON .)
+    EQ              reduce using rule 94 (keyword -> ON .)
+    COMMA           reduce using rule 94 (keyword -> ON .)
+    RIGHT_PAREN     reduce using rule 94 (keyword -> ON .)
+
+
+state 61
+
+    (95) keyword -> WITHOUT .
+    NRE             reduce using rule 95 (keyword -> WITHOUT .)
+    RE              reduce using rule 95 (keyword -> WITHOUT .)
+    NE              reduce using rule 95 (keyword -> WITHOUT .)
+    EQ              reduce using rule 95 (keyword -> WITHOUT .)
+    COMMA           reduce using rule 95 (keyword -> WITHOUT .)
+    RIGHT_PAREN     reduce using rule 95 (keyword -> WITHOUT .)
+
+
+state 62
+
+    (96) keyword -> BY .
+    NRE             reduce using rule 96 (keyword -> BY .)
+    RE              reduce using rule 96 (keyword -> BY .)
+    NE              reduce using rule 96 (keyword -> BY .)
+    EQ              reduce using rule 96 (keyword -> BY .)
+    COMMA           reduce using rule 96 (keyword -> BY .)
+    RIGHT_PAREN     reduce using rule 96 (keyword -> BY .)
+
+
+state 63
+
+    (97) keyword -> UNLESS .
+    NRE             reduce using rule 97 (keyword -> UNLESS .)
+    RE              reduce using rule 97 (keyword -> UNLESS .)
+    NE              reduce using rule 97 (keyword -> UNLESS .)
+    EQ              reduce using rule 97 (keyword -> UNLESS .)
+    COMMA           reduce using rule 97 (keyword -> UNLESS .)
+    RIGHT_PAREN     reduce using rule 97 (keyword -> UNLESS .)
+
+
+state 64
+
+    (98) keyword -> OR .
+    NRE             reduce using rule 98 (keyword -> OR .)
+    RE              reduce using rule 98 (keyword -> OR .)
+    NE              reduce using rule 98 (keyword -> OR .)
+    EQ              reduce using rule 98 (keyword -> OR .)
+    COMMA           reduce using rule 98 (keyword -> OR .)
+    RIGHT_PAREN     reduce using rule 98 (keyword -> OR .)
+
+
+state 65
+
+    (99) keyword -> AND .
+    NRE             reduce using rule 99 (keyword -> AND .)
+    RE              reduce using rule 99 (keyword -> AND .)
+    NE              reduce using rule 99 (keyword -> AND .)
+    EQ              reduce using rule 99 (keyword -> AND .)
+    COMMA           reduce using rule 99 (keyword -> AND .)
+    RIGHT_PAREN     reduce using rule 99 (keyword -> AND .)
+
+
+state 66
+
+    (49) instantSelector -> METRIC_NAME LEFT_BRACE . RIGHT_BRACE
+    (50) instantSelector -> METRIC_NAME LEFT_BRACE . labelMatcherList RIGHT_BRACE
+    (55) labelMatcherList -> . labelMatcher
+    (56) labelMatcherList -> . labelMatcher COMMA labelMatcherList
+    (51) labelMatcher -> . labelName NRE STRING
+    (52) labelMatcher -> . labelName RE STRING
+    (53) labelMatcher -> . labelName NE STRING
+    (54) labelMatcher -> . labelName EQ STRING
+    (81) labelName -> . LABEL_NAME
+    (82) labelName -> . METRIC_NAME
+    (83) labelName -> . keyword
+    (87) keyword -> . FUNCTION
+    (88) keyword -> . AGGREGATION_OPERATOR
+    (89) keyword -> . BOOL
+    (90) keyword -> . OFFSET
+    (91) keyword -> . GROUP_RIGHT
+    (92) keyword -> . GROUP_LEFT
+    (93) keyword -> . IGNORING
+    (94) keyword -> . ON
+    (95) keyword -> . WITHOUT
+    (96) keyword -> . BY
+    (97) keyword -> . UNLESS
+    (98) keyword -> . OR
+    (99) keyword -> . AND
+    RIGHT_BRACE     shift and go to state 102
+    LABEL_NAME      shift and go to state 50
+    METRIC_NAME     shift and go to state 51
+    FUNCTION        shift and go to state 53
+    AGGREGATION_OPERATOR shift and go to state 54
+    BOOL            shift and go to state 55
+    OFFSET          shift and go to state 56
+    GROUP_RIGHT     shift and go to state 57
+    GROUP_LEFT      shift and go to state 58
+    IGNORING        shift and go to state 59
+    ON              shift and go to state 60
+    WITHOUT         shift and go to state 61
+    BY              shift and go to state 62
+    UNLESS          shift and go to state 63
+    OR              shift and go to state 64
+    AND             shift and go to state 65
+
+    labelMatcherList               shift and go to state 103
+    labelMatcher                   shift and go to state 48
+    labelName                      shift and go to state 49
+    keyword                        shift and go to state 52
+
+state 67
+
+    (66) aggregation -> AGGREGATION_OPERATOR parameterList . WITHOUT labelNameList
+    (67) aggregation -> AGGREGATION_OPERATOR parameterList . BY labelNameList
+    (70) aggregation -> AGGREGATION_OPERATOR parameterList .
+    WITHOUT         shift and go to state 104
+    BY              shift and go to state 105
+    OR              reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    UNLESS          reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    AND             reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    SUB             reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    ADD             reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    MOD             reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    DIV             reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    MULT            reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    POW             reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    LE              reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    GE              reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    LT              reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    GT              reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    NE              reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    DEQ             reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    $end            reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    RIGHT_PAREN     reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+    COMMA           reduce using rule 70 (aggregation -> AGGREGATION_OPERATOR parameterList .)
+
+
+state 68
+
+    (68) aggregation -> AGGREGATION_OPERATOR WITHOUT . labelNameList parameterList
+    (86) labelNameList -> . LEFT_PAREN labelNameList2 RIGHT_PAREN
+    LEFT_PAREN      shift and go to state 107
+
+    labelNameList                  shift and go to state 106
+
+state 69
+
+    (69) aggregation -> AGGREGATION_OPERATOR BY . labelNameList parameterList
+    (86) labelNameList -> . LEFT_PAREN labelNameList2 RIGHT_PAREN
+    LEFT_PAREN      shift and go to state 107
+
+    labelNameList                  shift and go to state 108
+
+state 70
+
+    (65) parameterList -> LEFT_PAREN . parameterList2 RIGHT_PAREN
+    (63) parameterList2 -> . parameter
+    (64) parameterList2 -> . parameter COMMA parameterList2
+    (61) parameter -> . vectorOperation
+    (62) parameter -> . literal
+    (1) vectorOperation -> . vector
+    (2) vectorOperation -> . vectorOperation orOp vectorOperation
+    (3) vectorOperation -> . vectorOperation andUnlessOp vectorOperation
+    (4) vectorOperation -> . vectorOperation compareOp vectorOperation
+    (5) vectorOperation -> . vectorOperation addOp vectorOperation
+    (6) vectorOperation -> . vectorOperation multOp vectorOperation
+    (7) vectorOperation -> . unaryOp vectorOperation
+    (8) vectorOperation -> . vectorOperation powOp vectorOperation
+    (100) literal -> . STRING
+    (101) literal -> . NUMBER
+    (39) vector -> . parens
+    (40) vector -> . literal
+    (41) vector -> . offset
+    (42) vector -> . matrixSelector
+    (43) vector -> . instantSelector
+    (44) vector -> . aggregation
+    (45) vector -> . function
+    (9) unaryOp -> . SUB
+    (10) unaryOp -> . ADD
+    (46) parens -> . LEFT_PAREN vectorOperation RIGHT_PAREN
+    (58) offset -> . matrixSelector OFFSET DURATION
+    (59) offset -> . instantSelector OFFSET DURATION
+    (57) matrixSelector -> . instantSelector TIME_RANGE
+    (47) instantSelector -> . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (48) instantSelector -> . METRIC_NAME
+    (49) instantSelector -> . METRIC_NAME LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> . METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (66) aggregation -> . AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+    (67) aggregation -> . AGGREGATION_OPERATOR parameterList BY labelNameList
+    (68) aggregation -> . AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+    (69) aggregation -> . AGGREGATION_OPERATOR BY labelNameList parameterList
+    (70) aggregation -> . AGGREGATION_OPERATOR parameterList
+    (60) function -> . FUNCTION parameterList
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 15
+    SUB             shift and go to state 11
+    ADD             shift and go to state 12
+    LEFT_PAREN      shift and go to state 13
+    LEFT_BRACE      shift and go to state 16
+    METRIC_NAME     shift and go to state 17
+    AGGREGATION_OPERATOR shift and go to state 18
+    FUNCTION        shift and go to state 19
+
+    parameterList2                 shift and go to state 109
+    parameter                      shift and go to state 110
+    vectorOperation                shift and go to state 111
+    literal                        shift and go to state 112
+    vector                         shift and go to state 2
+    unaryOp                        shift and go to state 3
+    parens                         shift and go to state 4
+    offset                         shift and go to state 6
+    matrixSelector                 shift and go to state 7
+    instantSelector                shift and go to state 8
+    aggregation                    shift and go to state 9
+    function                       shift and go to state 10
+
+state 71
+
+    (60) function -> FUNCTION parameterList .
+    OR              reduce using rule 60 (function -> FUNCTION parameterList .)
+    UNLESS          reduce using rule 60 (function -> FUNCTION parameterList .)
+    AND             reduce using rule 60 (function -> FUNCTION parameterList .)
+    SUB             reduce using rule 60 (function -> FUNCTION parameterList .)
+    ADD             reduce using rule 60 (function -> FUNCTION parameterList .)
+    MOD             reduce using rule 60 (function -> FUNCTION parameterList .)
+    DIV             reduce using rule 60 (function -> FUNCTION parameterList .)
+    MULT            reduce using rule 60 (function -> FUNCTION parameterList .)
+    POW             reduce using rule 60 (function -> FUNCTION parameterList .)
+    LE              reduce using rule 60 (function -> FUNCTION parameterList .)
+    GE              reduce using rule 60 (function -> FUNCTION parameterList .)
+    LT              reduce using rule 60 (function -> FUNCTION parameterList .)
+    GT              reduce using rule 60 (function -> FUNCTION parameterList .)
+    NE              reduce using rule 60 (function -> FUNCTION parameterList .)
+    DEQ             reduce using rule 60 (function -> FUNCTION parameterList .)
+    $end            reduce using rule 60 (function -> FUNCTION parameterList .)
+    RIGHT_PAREN     reduce using rule 60 (function -> FUNCTION parameterList .)
+    COMMA           reduce using rule 60 (function -> FUNCTION parameterList .)
+
+
+state 72
+
+    (2) vectorOperation -> vectorOperation orOp vectorOperation .
+    (2) vectorOperation -> vectorOperation . orOp vectorOperation
+    (3) vectorOperation -> vectorOperation . andUnlessOp vectorOperation
+    (4) vectorOperation -> vectorOperation . compareOp vectorOperation
+    (5) vectorOperation -> vectorOperation . addOp vectorOperation
+    (6) vectorOperation -> vectorOperation . multOp vectorOperation
+    (8) vectorOperation -> vectorOperation . powOp vectorOperation
+    (37) orOp -> . OR
+    (38) orOp -> . OR grouping
+    (33) andUnlessOp -> . UNLESS
+    (34) andUnlessOp -> . AND
+    (35) andUnlessOp -> . UNLESS grouping
+    (36) andUnlessOp -> . AND grouping
+    (23) compareOp -> . compareOps
+    (24) compareOp -> . compareOps BOOL
+    (25) compareOp -> . compareOps grouping
+    (26) compareOp -> . compareOps BOOL grouping
+    (19) addOp -> . SUB
+    (20) addOp -> . ADD
+    (21) addOp -> . SUB grouping
+    (22) addOp -> . ADD grouping
+    (13) multOp -> . MOD
+    (14) multOp -> . DIV
+    (15) multOp -> . MULT
+    (16) multOp -> . MOD grouping
+    (17) multOp -> . DIV grouping
+    (18) multOp -> . MULT grouping
+    (11) powOp -> . POW
+    (12) powOp -> . POW grouping
+    (27) compareOps -> . LE
+    (28) compareOps -> . GE
+    (29) compareOps -> . LT
+    (30) compareOps -> . GT
+    (31) compareOps -> . NE
+    (32) compareOps -> . DEQ
+  ! shift/reduce conflict for OR resolved as shift
+  ! shift/reduce conflict for UNLESS resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for SUB resolved as shift
+  ! shift/reduce conflict for ADD resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for POW resolved as shift
+  ! shift/reduce conflict for LE resolved as shift
+  ! shift/reduce conflict for GE resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for NE resolved as shift
+  ! shift/reduce conflict for DEQ resolved as shift
+    $end            reduce using rule 2 (vectorOperation -> vectorOperation orOp vectorOperation .)
+    RIGHT_PAREN     reduce using rule 2 (vectorOperation -> vectorOperation orOp vectorOperation .)
+    COMMA           reduce using rule 2 (vectorOperation -> vectorOperation orOp vectorOperation .)
+    OR              shift and go to state 26
+    UNLESS          shift and go to state 27
+    AND             shift and go to state 28
+    SUB             shift and go to state 30
+    ADD             shift and go to state 31
+    MOD             shift and go to state 32
+    DIV             shift and go to state 33
+    MULT            shift and go to state 34
+    POW             shift and go to state 35
+    LE              shift and go to state 36
+    GE              shift and go to state 37
+    LT              shift and go to state 38
+    GT              shift and go to state 39
+    NE              shift and go to state 40
+    DEQ             shift and go to state 41
+
+    orOp                           shift and go to state 20
+    andUnlessOp                    shift and go to state 21
+    compareOp                      shift and go to state 22
+    addOp                          shift and go to state 23
+    multOp                         shift and go to state 24
+    powOp                          shift and go to state 25
+    compareOps                     shift and go to state 29
+
+state 73
+
+    (3) vectorOperation -> vectorOperation andUnlessOp vectorOperation .
+    (2) vectorOperation -> vectorOperation . orOp vectorOperation
+    (3) vectorOperation -> vectorOperation . andUnlessOp vectorOperation
+    (4) vectorOperation -> vectorOperation . compareOp vectorOperation
+    (5) vectorOperation -> vectorOperation . addOp vectorOperation
+    (6) vectorOperation -> vectorOperation . multOp vectorOperation
+    (8) vectorOperation -> vectorOperation . powOp vectorOperation
+    (37) orOp -> . OR
+    (38) orOp -> . OR grouping
+    (33) andUnlessOp -> . UNLESS
+    (34) andUnlessOp -> . AND
+    (35) andUnlessOp -> . UNLESS grouping
+    (36) andUnlessOp -> . AND grouping
+    (23) compareOp -> . compareOps
+    (24) compareOp -> . compareOps BOOL
+    (25) compareOp -> . compareOps grouping
+    (26) compareOp -> . compareOps BOOL grouping
+    (19) addOp -> . SUB
+    (20) addOp -> . ADD
+    (21) addOp -> . SUB grouping
+    (22) addOp -> . ADD grouping
+    (13) multOp -> . MOD
+    (14) multOp -> . DIV
+    (15) multOp -> . MULT
+    (16) multOp -> . MOD grouping
+    (17) multOp -> . DIV grouping
+    (18) multOp -> . MULT grouping
+    (11) powOp -> . POW
+    (12) powOp -> . POW grouping
+    (27) compareOps -> . LE
+    (28) compareOps -> . GE
+    (29) compareOps -> . LT
+    (30) compareOps -> . GT
+    (31) compareOps -> . NE
+    (32) compareOps -> . DEQ
+  ! shift/reduce conflict for OR resolved as shift
+  ! shift/reduce conflict for UNLESS resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for SUB resolved as shift
+  ! shift/reduce conflict for ADD resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for POW resolved as shift
+  ! shift/reduce conflict for LE resolved as shift
+  ! shift/reduce conflict for GE resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for NE resolved as shift
+  ! shift/reduce conflict for DEQ resolved as shift
+    $end            reduce using rule 3 (vectorOperation -> vectorOperation andUnlessOp vectorOperation .)
+    RIGHT_PAREN     reduce using rule 3 (vectorOperation -> vectorOperation andUnlessOp vectorOperation .)
+    COMMA           reduce using rule 3 (vectorOperation -> vectorOperation andUnlessOp vectorOperation .)
+    OR              shift and go to state 26
+    UNLESS          shift and go to state 27
+    AND             shift and go to state 28
+    SUB             shift and go to state 30
+    ADD             shift and go to state 31
+    MOD             shift and go to state 32
+    DIV             shift and go to state 33
+    MULT            shift and go to state 34
+    POW             shift and go to state 35
+    LE              shift and go to state 36
+    GE              shift and go to state 37
+    LT              shift and go to state 38
+    GT              shift and go to state 39
+    NE              shift and go to state 40
+    DEQ             shift and go to state 41
+
+    andUnlessOp                    shift and go to state 21
+    orOp                           shift and go to state 20
+    compareOp                      shift and go to state 22
+    addOp                          shift and go to state 23
+    multOp                         shift and go to state 24
+    powOp                          shift and go to state 25
+    compareOps                     shift and go to state 29
+
+state 74
+
+    (4) vectorOperation -> vectorOperation compareOp vectorOperation .
+    (2) vectorOperation -> vectorOperation . orOp vectorOperation
+    (3) vectorOperation -> vectorOperation . andUnlessOp vectorOperation
+    (4) vectorOperation -> vectorOperation . compareOp vectorOperation
+    (5) vectorOperation -> vectorOperation . addOp vectorOperation
+    (6) vectorOperation -> vectorOperation . multOp vectorOperation
+    (8) vectorOperation -> vectorOperation . powOp vectorOperation
+    (37) orOp -> . OR
+    (38) orOp -> . OR grouping
+    (33) andUnlessOp -> . UNLESS
+    (34) andUnlessOp -> . AND
+    (35) andUnlessOp -> . UNLESS grouping
+    (36) andUnlessOp -> . AND grouping
+    (23) compareOp -> . compareOps
+    (24) compareOp -> . compareOps BOOL
+    (25) compareOp -> . compareOps grouping
+    (26) compareOp -> . compareOps BOOL grouping
+    (19) addOp -> . SUB
+    (20) addOp -> . ADD
+    (21) addOp -> . SUB grouping
+    (22) addOp -> . ADD grouping
+    (13) multOp -> . MOD
+    (14) multOp -> . DIV
+    (15) multOp -> . MULT
+    (16) multOp -> . MOD grouping
+    (17) multOp -> . DIV grouping
+    (18) multOp -> . MULT grouping
+    (11) powOp -> . POW
+    (12) powOp -> . POW grouping
+    (27) compareOps -> . LE
+    (28) compareOps -> . GE
+    (29) compareOps -> . LT
+    (30) compareOps -> . GT
+    (31) compareOps -> . NE
+    (32) compareOps -> . DEQ
+  ! shift/reduce conflict for OR resolved as shift
+  ! shift/reduce conflict for UNLESS resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for SUB resolved as shift
+  ! shift/reduce conflict for ADD resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for POW resolved as shift
+  ! shift/reduce conflict for LE resolved as shift
+  ! shift/reduce conflict for GE resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for NE resolved as shift
+  ! shift/reduce conflict for DEQ resolved as shift
+    $end            reduce using rule 4 (vectorOperation -> vectorOperation compareOp vectorOperation .)
+    RIGHT_PAREN     reduce using rule 4 (vectorOperation -> vectorOperation compareOp vectorOperation .)
+    COMMA           reduce using rule 4 (vectorOperation -> vectorOperation compareOp vectorOperation .)
+    OR              shift and go to state 26
+    UNLESS          shift and go to state 27
+    AND             shift and go to state 28
+    SUB             shift and go to state 30
+    ADD             shift and go to state 31
+    MOD             shift and go to state 32
+    DIV             shift and go to state 33
+    MULT            shift and go to state 34
+    POW             shift and go to state 35
+    LE              shift and go to state 36
+    GE              shift and go to state 37
+    LT              shift and go to state 38
+    GT              shift and go to state 39
+    NE              shift and go to state 40
+    DEQ             shift and go to state 41
+
+    compareOp                      shift and go to state 22
+    orOp                           shift and go to state 20
+    andUnlessOp                    shift and go to state 21
+    addOp                          shift and go to state 23
+    multOp                         shift and go to state 24
+    powOp                          shift and go to state 25
+    compareOps                     shift and go to state 29
+
+state 75
+
+    (5) vectorOperation -> vectorOperation addOp vectorOperation .
+    (2) vectorOperation -> vectorOperation . orOp vectorOperation
+    (3) vectorOperation -> vectorOperation . andUnlessOp vectorOperation
+    (4) vectorOperation -> vectorOperation . compareOp vectorOperation
+    (5) vectorOperation -> vectorOperation . addOp vectorOperation
+    (6) vectorOperation -> vectorOperation . multOp vectorOperation
+    (8) vectorOperation -> vectorOperation . powOp vectorOperation
+    (37) orOp -> . OR
+    (38) orOp -> . OR grouping
+    (33) andUnlessOp -> . UNLESS
+    (34) andUnlessOp -> . AND
+    (35) andUnlessOp -> . UNLESS grouping
+    (36) andUnlessOp -> . AND grouping
+    (23) compareOp -> . compareOps
+    (24) compareOp -> . compareOps BOOL
+    (25) compareOp -> . compareOps grouping
+    (26) compareOp -> . compareOps BOOL grouping
+    (19) addOp -> . SUB
+    (20) addOp -> . ADD
+    (21) addOp -> . SUB grouping
+    (22) addOp -> . ADD grouping
+    (13) multOp -> . MOD
+    (14) multOp -> . DIV
+    (15) multOp -> . MULT
+    (16) multOp -> . MOD grouping
+    (17) multOp -> . DIV grouping
+    (18) multOp -> . MULT grouping
+    (11) powOp -> . POW
+    (12) powOp -> . POW grouping
+    (27) compareOps -> . LE
+    (28) compareOps -> . GE
+    (29) compareOps -> . LT
+    (30) compareOps -> . GT
+    (31) compareOps -> . NE
+    (32) compareOps -> . DEQ
+  ! shift/reduce conflict for OR resolved as shift
+  ! shift/reduce conflict for UNLESS resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for SUB resolved as shift
+  ! shift/reduce conflict for ADD resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for POW resolved as shift
+  ! shift/reduce conflict for LE resolved as shift
+  ! shift/reduce conflict for GE resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for NE resolved as shift
+  ! shift/reduce conflict for DEQ resolved as shift
+    $end            reduce using rule 5 (vectorOperation -> vectorOperation addOp vectorOperation .)
+    RIGHT_PAREN     reduce using rule 5 (vectorOperation -> vectorOperation addOp vectorOperation .)
+    COMMA           reduce using rule 5 (vectorOperation -> vectorOperation addOp vectorOperation .)
+    OR              shift and go to state 26
+    UNLESS          shift and go to state 27
+    AND             shift and go to state 28
+    SUB             shift and go to state 30
+    ADD             shift and go to state 31
+    MOD             shift and go to state 32
+    DIV             shift and go to state 33
+    MULT            shift and go to state 34
+    POW             shift and go to state 35
+    LE              shift and go to state 36
+    GE              shift and go to state 37
+    LT              shift and go to state 38
+    GT              shift and go to state 39
+    NE              shift and go to state 40
+    DEQ             shift and go to state 41
+
+    addOp                          shift and go to state 23
+    orOp                           shift and go to state 20
+    andUnlessOp                    shift and go to state 21
+    compareOp                      shift and go to state 22
+    multOp                         shift and go to state 24
+    powOp                          shift and go to state 25
+    compareOps                     shift and go to state 29
+
+state 76
+
+    (6) vectorOperation -> vectorOperation multOp vectorOperation .
+    (2) vectorOperation -> vectorOperation . orOp vectorOperation
+    (3) vectorOperation -> vectorOperation . andUnlessOp vectorOperation
+    (4) vectorOperation -> vectorOperation . compareOp vectorOperation
+    (5) vectorOperation -> vectorOperation . addOp vectorOperation
+    (6) vectorOperation -> vectorOperation . multOp vectorOperation
+    (8) vectorOperation -> vectorOperation . powOp vectorOperation
+    (37) orOp -> . OR
+    (38) orOp -> . OR grouping
+    (33) andUnlessOp -> . UNLESS
+    (34) andUnlessOp -> . AND
+    (35) andUnlessOp -> . UNLESS grouping
+    (36) andUnlessOp -> . AND grouping
+    (23) compareOp -> . compareOps
+    (24) compareOp -> . compareOps BOOL
+    (25) compareOp -> . compareOps grouping
+    (26) compareOp -> . compareOps BOOL grouping
+    (19) addOp -> . SUB
+    (20) addOp -> . ADD
+    (21) addOp -> . SUB grouping
+    (22) addOp -> . ADD grouping
+    (13) multOp -> . MOD
+    (14) multOp -> . DIV
+    (15) multOp -> . MULT
+    (16) multOp -> . MOD grouping
+    (17) multOp -> . DIV grouping
+    (18) multOp -> . MULT grouping
+    (11) powOp -> . POW
+    (12) powOp -> . POW grouping
+    (27) compareOps -> . LE
+    (28) compareOps -> . GE
+    (29) compareOps -> . LT
+    (30) compareOps -> . GT
+    (31) compareOps -> . NE
+    (32) compareOps -> . DEQ
+  ! shift/reduce conflict for OR resolved as shift
+  ! shift/reduce conflict for UNLESS resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for SUB resolved as shift
+  ! shift/reduce conflict for ADD resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for POW resolved as shift
+  ! shift/reduce conflict for LE resolved as shift
+  ! shift/reduce conflict for GE resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for NE resolved as shift
+  ! shift/reduce conflict for DEQ resolved as shift
+    $end            reduce using rule 6 (vectorOperation -> vectorOperation multOp vectorOperation .)
+    RIGHT_PAREN     reduce using rule 6 (vectorOperation -> vectorOperation multOp vectorOperation .)
+    COMMA           reduce using rule 6 (vectorOperation -> vectorOperation multOp vectorOperation .)
+    OR              shift and go to state 26
+    UNLESS          shift and go to state 27
+    AND             shift and go to state 28
+    SUB             shift and go to state 30
+    ADD             shift and go to state 31
+    MOD             shift and go to state 32
+    DIV             shift and go to state 33
+    MULT            shift and go to state 34
+    POW             shift and go to state 35
+    LE              shift and go to state 36
+    GE              shift and go to state 37
+    LT              shift and go to state 38
+    GT              shift and go to state 39
+    NE              shift and go to state 40
+    DEQ             shift and go to state 41
+
+    multOp                         shift and go to state 24
+    orOp                           shift and go to state 20
+    andUnlessOp                    shift and go to state 21
+    compareOp                      shift and go to state 22
+    addOp                          shift and go to state 23
+    powOp                          shift and go to state 25
+    compareOps                     shift and go to state 29
+
+state 77
+
+    (8) vectorOperation -> vectorOperation powOp vectorOperation .
+    (2) vectorOperation -> vectorOperation . orOp vectorOperation
+    (3) vectorOperation -> vectorOperation . andUnlessOp vectorOperation
+    (4) vectorOperation -> vectorOperation . compareOp vectorOperation
+    (5) vectorOperation -> vectorOperation . addOp vectorOperation
+    (6) vectorOperation -> vectorOperation . multOp vectorOperation
+    (8) vectorOperation -> vectorOperation . powOp vectorOperation
+    (37) orOp -> . OR
+    (38) orOp -> . OR grouping
+    (33) andUnlessOp -> . UNLESS
+    (34) andUnlessOp -> . AND
+    (35) andUnlessOp -> . UNLESS grouping
+    (36) andUnlessOp -> . AND grouping
+    (23) compareOp -> . compareOps
+    (24) compareOp -> . compareOps BOOL
+    (25) compareOp -> . compareOps grouping
+    (26) compareOp -> . compareOps BOOL grouping
+    (19) addOp -> . SUB
+    (20) addOp -> . ADD
+    (21) addOp -> . SUB grouping
+    (22) addOp -> . ADD grouping
+    (13) multOp -> . MOD
+    (14) multOp -> . DIV
+    (15) multOp -> . MULT
+    (16) multOp -> . MOD grouping
+    (17) multOp -> . DIV grouping
+    (18) multOp -> . MULT grouping
+    (11) powOp -> . POW
+    (12) powOp -> . POW grouping
+    (27) compareOps -> . LE
+    (28) compareOps -> . GE
+    (29) compareOps -> . LT
+    (30) compareOps -> . GT
+    (31) compareOps -> . NE
+    (32) compareOps -> . DEQ
+    OR              reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    UNLESS          reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    AND             reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    SUB             reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    ADD             reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    MOD             reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    DIV             reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    MULT            reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    LE              reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    GE              reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    LT              reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    GT              reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    NE              reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    DEQ             reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    $end            reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    RIGHT_PAREN     reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    COMMA           reduce using rule 8 (vectorOperation -> vectorOperation powOp vectorOperation .)
+    POW             shift and go to state 35
+
+    powOp                          shift and go to state 25
+    orOp                           shift and go to state 20
+    andUnlessOp                    shift and go to state 21
+    compareOp                      shift and go to state 22
+    addOp                          shift and go to state 23
+    multOp                         shift and go to state 24
+    compareOps                     shift and go to state 29
+
+state 78
+
+    (38) orOp -> OR grouping .
+    SUB             reduce using rule 38 (orOp -> OR grouping .)
+    ADD             reduce using rule 38 (orOp -> OR grouping .)
+    LEFT_PAREN      reduce using rule 38 (orOp -> OR grouping .)
+    STRING          reduce using rule 38 (orOp -> OR grouping .)
+    NUMBER          reduce using rule 38 (orOp -> OR grouping .)
+    LEFT_BRACE      reduce using rule 38 (orOp -> OR grouping .)
+    METRIC_NAME     reduce using rule 38 (orOp -> OR grouping .)
+    AGGREGATION_OPERATOR reduce using rule 38 (orOp -> OR grouping .)
+    FUNCTION        reduce using rule 38 (orOp -> OR grouping .)
+
+
+state 79
+
+    (71) grouping -> ignoring .
+    (73) grouping -> ignoring . groupRight
+    (74) grouping -> ignoring . groupLeft
+    (80) groupRight -> . GROUP_RIGHT labelNameList
+    (79) groupLeft -> . GROUP_LEFT labelNameList
+    SUB             reduce using rule 71 (grouping -> ignoring .)
+    ADD             reduce using rule 71 (grouping -> ignoring .)
+    LEFT_PAREN      reduce using rule 71 (grouping -> ignoring .)
+    STRING          reduce using rule 71 (grouping -> ignoring .)
+    NUMBER          reduce using rule 71 (grouping -> ignoring .)
+    LEFT_BRACE      reduce using rule 71 (grouping -> ignoring .)
+    METRIC_NAME     reduce using rule 71 (grouping -> ignoring .)
+    AGGREGATION_OPERATOR reduce using rule 71 (grouping -> ignoring .)
+    FUNCTION        reduce using rule 71 (grouping -> ignoring .)
+    GROUP_RIGHT     shift and go to state 115
+    GROUP_LEFT      shift and go to state 116
+
+    groupRight                     shift and go to state 113
+    groupLeft                      shift and go to state 114
+
+state 80
+
+    (72) grouping -> on .
+    (75) grouping -> on . groupRight
+    (76) grouping -> on . groupLeft
+    (80) groupRight -> . GROUP_RIGHT labelNameList
+    (79) groupLeft -> . GROUP_LEFT labelNameList
+    SUB             reduce using rule 72 (grouping -> on .)
+    ADD             reduce using rule 72 (grouping -> on .)
+    LEFT_PAREN      reduce using rule 72 (grouping -> on .)
+    STRING          reduce using rule 72 (grouping -> on .)
+    NUMBER          reduce using rule 72 (grouping -> on .)
+    LEFT_BRACE      reduce using rule 72 (grouping -> on .)
+    METRIC_NAME     reduce using rule 72 (grouping -> on .)
+    AGGREGATION_OPERATOR reduce using rule 72 (grouping -> on .)
+    FUNCTION        reduce using rule 72 (grouping -> on .)
+    GROUP_RIGHT     shift and go to state 115
+    GROUP_LEFT      shift and go to state 116
+
+    groupRight                     shift and go to state 117
+    groupLeft                      shift and go to state 118
+
+state 81
+
+    (78) ignoring -> IGNORING . labelNameList
+    (86) labelNameList -> . LEFT_PAREN labelNameList2 RIGHT_PAREN
+    LEFT_PAREN      shift and go to state 107
+
+    labelNameList                  shift and go to state 119
+
+state 82
+
+    (77) on -> ON . labelNameList
+    (86) labelNameList -> . LEFT_PAREN labelNameList2 RIGHT_PAREN
+    LEFT_PAREN      shift and go to state 107
+
+    labelNameList                  shift and go to state 120
+
+state 83
+
+    (35) andUnlessOp -> UNLESS grouping .
+    SUB             reduce using rule 35 (andUnlessOp -> UNLESS grouping .)
+    ADD             reduce using rule 35 (andUnlessOp -> UNLESS grouping .)
+    LEFT_PAREN      reduce using rule 35 (andUnlessOp -> UNLESS grouping .)
+    STRING          reduce using rule 35 (andUnlessOp -> UNLESS grouping .)
+    NUMBER          reduce using rule 35 (andUnlessOp -> UNLESS grouping .)
+    LEFT_BRACE      reduce using rule 35 (andUnlessOp -> UNLESS grouping .)
+    METRIC_NAME     reduce using rule 35 (andUnlessOp -> UNLESS grouping .)
+    AGGREGATION_OPERATOR reduce using rule 35 (andUnlessOp -> UNLESS grouping .)
+    FUNCTION        reduce using rule 35 (andUnlessOp -> UNLESS grouping .)
+
+
+state 84
+
+    (36) andUnlessOp -> AND grouping .
+    SUB             reduce using rule 36 (andUnlessOp -> AND grouping .)
+    ADD             reduce using rule 36 (andUnlessOp -> AND grouping .)
+    LEFT_PAREN      reduce using rule 36 (andUnlessOp -> AND grouping .)
+    STRING          reduce using rule 36 (andUnlessOp -> AND grouping .)
+    NUMBER          reduce using rule 36 (andUnlessOp -> AND grouping .)
+    LEFT_BRACE      reduce using rule 36 (andUnlessOp -> AND grouping .)
+    METRIC_NAME     reduce using rule 36 (andUnlessOp -> AND grouping .)
+    AGGREGATION_OPERATOR reduce using rule 36 (andUnlessOp -> AND grouping .)
+    FUNCTION        reduce using rule 36 (andUnlessOp -> AND grouping .)
+
+
+state 85
+
+    (24) compareOp -> compareOps BOOL .
+    (26) compareOp -> compareOps BOOL . grouping
+    (71) grouping -> . ignoring
+    (72) grouping -> . on
+    (73) grouping -> . ignoring groupRight
+    (74) grouping -> . ignoring groupLeft
+    (75) grouping -> . on groupRight
+    (76) grouping -> . on groupLeft
+    (78) ignoring -> . IGNORING labelNameList
+    (77) on -> . ON labelNameList
+    SUB             reduce using rule 24 (compareOp -> compareOps BOOL .)
+    ADD             reduce using rule 24 (compareOp -> compareOps BOOL .)
+    LEFT_PAREN      reduce using rule 24 (compareOp -> compareOps BOOL .)
+    STRING          reduce using rule 24 (compareOp -> compareOps BOOL .)
+    NUMBER          reduce using rule 24 (compareOp -> compareOps BOOL .)
+    LEFT_BRACE      reduce using rule 24 (compareOp -> compareOps BOOL .)
+    METRIC_NAME     reduce using rule 24 (compareOp -> compareOps BOOL .)
+    AGGREGATION_OPERATOR reduce using rule 24 (compareOp -> compareOps BOOL .)
+    FUNCTION        reduce using rule 24 (compareOp -> compareOps BOOL .)
+    IGNORING        shift and go to state 81
+    ON              shift and go to state 82
+
+    grouping                       shift and go to state 121
+    ignoring                       shift and go to state 79
+    on                             shift and go to state 80
+
+state 86
+
+    (25) compareOp -> compareOps grouping .
+    SUB             reduce using rule 25 (compareOp -> compareOps grouping .)
+    ADD             reduce using rule 25 (compareOp -> compareOps grouping .)
+    LEFT_PAREN      reduce using rule 25 (compareOp -> compareOps grouping .)
+    STRING          reduce using rule 25 (compareOp -> compareOps grouping .)
+    NUMBER          reduce using rule 25 (compareOp -> compareOps grouping .)
+    LEFT_BRACE      reduce using rule 25 (compareOp -> compareOps grouping .)
+    METRIC_NAME     reduce using rule 25 (compareOp -> compareOps grouping .)
+    AGGREGATION_OPERATOR reduce using rule 25 (compareOp -> compareOps grouping .)
+    FUNCTION        reduce using rule 25 (compareOp -> compareOps grouping .)
+
+
+state 87
+
+    (21) addOp -> SUB grouping .
+    SUB             reduce using rule 21 (addOp -> SUB grouping .)
+    ADD             reduce using rule 21 (addOp -> SUB grouping .)
+    LEFT_PAREN      reduce using rule 21 (addOp -> SUB grouping .)
+    STRING          reduce using rule 21 (addOp -> SUB grouping .)
+    NUMBER          reduce using rule 21 (addOp -> SUB grouping .)
+    LEFT_BRACE      reduce using rule 21 (addOp -> SUB grouping .)
+    METRIC_NAME     reduce using rule 21 (addOp -> SUB grouping .)
+    AGGREGATION_OPERATOR reduce using rule 21 (addOp -> SUB grouping .)
+    FUNCTION        reduce using rule 21 (addOp -> SUB grouping .)
+
+
+state 88
+
+    (22) addOp -> ADD grouping .
+    SUB             reduce using rule 22 (addOp -> ADD grouping .)
+    ADD             reduce using rule 22 (addOp -> ADD grouping .)
+    LEFT_PAREN      reduce using rule 22 (addOp -> ADD grouping .)
+    STRING          reduce using rule 22 (addOp -> ADD grouping .)
+    NUMBER          reduce using rule 22 (addOp -> ADD grouping .)
+    LEFT_BRACE      reduce using rule 22 (addOp -> ADD grouping .)
+    METRIC_NAME     reduce using rule 22 (addOp -> ADD grouping .)
+    AGGREGATION_OPERATOR reduce using rule 22 (addOp -> ADD grouping .)
+    FUNCTION        reduce using rule 22 (addOp -> ADD grouping .)
+
+
+state 89
+
+    (16) multOp -> MOD grouping .
+    SUB             reduce using rule 16 (multOp -> MOD grouping .)
+    ADD             reduce using rule 16 (multOp -> MOD grouping .)
+    LEFT_PAREN      reduce using rule 16 (multOp -> MOD grouping .)
+    STRING          reduce using rule 16 (multOp -> MOD grouping .)
+    NUMBER          reduce using rule 16 (multOp -> MOD grouping .)
+    LEFT_BRACE      reduce using rule 16 (multOp -> MOD grouping .)
+    METRIC_NAME     reduce using rule 16 (multOp -> MOD grouping .)
+    AGGREGATION_OPERATOR reduce using rule 16 (multOp -> MOD grouping .)
+    FUNCTION        reduce using rule 16 (multOp -> MOD grouping .)
+
+
+state 90
+
+    (17) multOp -> DIV grouping .
+    SUB             reduce using rule 17 (multOp -> DIV grouping .)
+    ADD             reduce using rule 17 (multOp -> DIV grouping .)
+    LEFT_PAREN      reduce using rule 17 (multOp -> DIV grouping .)
+    STRING          reduce using rule 17 (multOp -> DIV grouping .)
+    NUMBER          reduce using rule 17 (multOp -> DIV grouping .)
+    LEFT_BRACE      reduce using rule 17 (multOp -> DIV grouping .)
+    METRIC_NAME     reduce using rule 17 (multOp -> DIV grouping .)
+    AGGREGATION_OPERATOR reduce using rule 17 (multOp -> DIV grouping .)
+    FUNCTION        reduce using rule 17 (multOp -> DIV grouping .)
+
+
+state 91
+
+    (18) multOp -> MULT grouping .
+    SUB             reduce using rule 18 (multOp -> MULT grouping .)
+    ADD             reduce using rule 18 (multOp -> MULT grouping .)
+    LEFT_PAREN      reduce using rule 18 (multOp -> MULT grouping .)
+    STRING          reduce using rule 18 (multOp -> MULT grouping .)
+    NUMBER          reduce using rule 18 (multOp -> MULT grouping .)
+    LEFT_BRACE      reduce using rule 18 (multOp -> MULT grouping .)
+    METRIC_NAME     reduce using rule 18 (multOp -> MULT grouping .)
+    AGGREGATION_OPERATOR reduce using rule 18 (multOp -> MULT grouping .)
+    FUNCTION        reduce using rule 18 (multOp -> MULT grouping .)
+
+
+state 92
+
+    (12) powOp -> POW grouping .
+    SUB             reduce using rule 12 (powOp -> POW grouping .)
+    ADD             reduce using rule 12 (powOp -> POW grouping .)
+    LEFT_PAREN      reduce using rule 12 (powOp -> POW grouping .)
+    STRING          reduce using rule 12 (powOp -> POW grouping .)
+    NUMBER          reduce using rule 12 (powOp -> POW grouping .)
+    LEFT_BRACE      reduce using rule 12 (powOp -> POW grouping .)
+    METRIC_NAME     reduce using rule 12 (powOp -> POW grouping .)
+    AGGREGATION_OPERATOR reduce using rule 12 (powOp -> POW grouping .)
+    FUNCTION        reduce using rule 12 (powOp -> POW grouping .)
+
+
+state 93
+
+    (58) offset -> matrixSelector OFFSET DURATION .
+    OR              reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    UNLESS          reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    AND             reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    SUB             reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    ADD             reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    MOD             reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    DIV             reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    MULT            reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    POW             reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    LE              reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    GE              reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    LT              reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    GT              reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    NE              reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    DEQ             reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    $end            reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    RIGHT_PAREN     reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+    COMMA           reduce using rule 58 (offset -> matrixSelector OFFSET DURATION .)
+
+
+state 94
+
+    (59) offset -> instantSelector OFFSET DURATION .
+    OR              reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    UNLESS          reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    AND             reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    SUB             reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    ADD             reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    MOD             reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    DIV             reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    MULT            reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    POW             reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    LE              reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    GE              reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    LT              reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    GT              reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    NE              reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    DEQ             reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    $end            reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    RIGHT_PAREN     reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+    COMMA           reduce using rule 59 (offset -> instantSelector OFFSET DURATION .)
+
+
+state 95
+
+    (46) parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .
+    OR              reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    UNLESS          reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    AND             reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    SUB             reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    ADD             reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    MOD             reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    DIV             reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    MULT            reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    POW             reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    LE              reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    GE              reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    LT              reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    GT              reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    NE              reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    DEQ             reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    $end            reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    RIGHT_PAREN     reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+    COMMA           reduce using rule 46 (parens -> LEFT_PAREN vectorOperation RIGHT_PAREN .)
+
+
+state 96
+
+    (47) instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .
+    OFFSET          reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    TIME_RANGE      reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    OR              reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    UNLESS          reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    AND             reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    SUB             reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    ADD             reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    MOD             reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    DIV             reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    MULT            reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    POW             reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    LE              reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    GE              reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    LT              reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    GT              reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    NE              reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    DEQ             reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    $end            reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    RIGHT_PAREN     reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    COMMA           reduce using rule 47 (instantSelector -> LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+
+
+state 97
+
+    (56) labelMatcherList -> labelMatcher COMMA . labelMatcherList
+    (55) labelMatcherList -> . labelMatcher
+    (56) labelMatcherList -> . labelMatcher COMMA labelMatcherList
+    (51) labelMatcher -> . labelName NRE STRING
+    (52) labelMatcher -> . labelName RE STRING
+    (53) labelMatcher -> . labelName NE STRING
+    (54) labelMatcher -> . labelName EQ STRING
+    (81) labelName -> . LABEL_NAME
+    (82) labelName -> . METRIC_NAME
+    (83) labelName -> . keyword
+    (87) keyword -> . FUNCTION
+    (88) keyword -> . AGGREGATION_OPERATOR
+    (89) keyword -> . BOOL
+    (90) keyword -> . OFFSET
+    (91) keyword -> . GROUP_RIGHT
+    (92) keyword -> . GROUP_LEFT
+    (93) keyword -> . IGNORING
+    (94) keyword -> . ON
+    (95) keyword -> . WITHOUT
+    (96) keyword -> . BY
+    (97) keyword -> . UNLESS
+    (98) keyword -> . OR
+    (99) keyword -> . AND
+    LABEL_NAME      shift and go to state 50
+    METRIC_NAME     shift and go to state 51
+    FUNCTION        shift and go to state 53
+    AGGREGATION_OPERATOR shift and go to state 54
+    BOOL            shift and go to state 55
+    OFFSET          shift and go to state 56
+    GROUP_RIGHT     shift and go to state 57
+    GROUP_LEFT      shift and go to state 58
+    IGNORING        shift and go to state 59
+    ON              shift and go to state 60
+    WITHOUT         shift and go to state 61
+    BY              shift and go to state 62
+    UNLESS          shift and go to state 63
+    OR              shift and go to state 64
+    AND             shift and go to state 65
+
+    labelMatcher                   shift and go to state 48
+    labelMatcherList               shift and go to state 122
+    labelName                      shift and go to state 49
+    keyword                        shift and go to state 52
+
+state 98
+
+    (51) labelMatcher -> labelName NRE . STRING
+    STRING          shift and go to state 123
+
+
+state 99
+
+    (52) labelMatcher -> labelName RE . STRING
+    STRING          shift and go to state 124
+
+
+state 100
+
+    (53) labelMatcher -> labelName NE . STRING
+    STRING          shift and go to state 125
+
+
+state 101
+
+    (54) labelMatcher -> labelName EQ . STRING
+    STRING          shift and go to state 126
+
+
+state 102
+
+    (49) instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .
+    OFFSET          reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    TIME_RANGE      reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    OR              reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    UNLESS          reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    AND             reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    SUB             reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    ADD             reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    MOD             reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    DIV             reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    MULT            reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    POW             reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    LE              reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    GE              reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    LT              reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    GT              reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    NE              reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    DEQ             reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    $end            reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    RIGHT_PAREN     reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+    COMMA           reduce using rule 49 (instantSelector -> METRIC_NAME LEFT_BRACE RIGHT_BRACE .)
+
+
+state 103
+
+    (50) instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList . RIGHT_BRACE
+    RIGHT_BRACE     shift and go to state 127
+
+
+state 104
+
+    (66) aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT . labelNameList
+    (86) labelNameList -> . LEFT_PAREN labelNameList2 RIGHT_PAREN
+    LEFT_PAREN      shift and go to state 107
+
+    labelNameList                  shift and go to state 128
+
+state 105
+
+    (67) aggregation -> AGGREGATION_OPERATOR parameterList BY . labelNameList
+    (86) labelNameList -> . LEFT_PAREN labelNameList2 RIGHT_PAREN
+    LEFT_PAREN      shift and go to state 107
+
+    labelNameList                  shift and go to state 129
+
+state 106
+
+    (68) aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList . parameterList
+    (65) parameterList -> . LEFT_PAREN parameterList2 RIGHT_PAREN
+    LEFT_PAREN      shift and go to state 70
+
+    parameterList                  shift and go to state 130
+
+state 107
+
+    (86) labelNameList -> LEFT_PAREN . labelNameList2 RIGHT_PAREN
+    (84) labelNameList2 -> . labelName
+    (85) labelNameList2 -> . labelName COMMA labelNameList2
+    (81) labelName -> . LABEL_NAME
+    (82) labelName -> . METRIC_NAME
+    (83) labelName -> . keyword
+    (87) keyword -> . FUNCTION
+    (88) keyword -> . AGGREGATION_OPERATOR
+    (89) keyword -> . BOOL
+    (90) keyword -> . OFFSET
+    (91) keyword -> . GROUP_RIGHT
+    (92) keyword -> . GROUP_LEFT
+    (93) keyword -> . IGNORING
+    (94) keyword -> . ON
+    (95) keyword -> . WITHOUT
+    (96) keyword -> . BY
+    (97) keyword -> . UNLESS
+    (98) keyword -> . OR
+    (99) keyword -> . AND
+    LABEL_NAME      shift and go to state 50
+    METRIC_NAME     shift and go to state 51
+    FUNCTION        shift and go to state 53
+    AGGREGATION_OPERATOR shift and go to state 54
+    BOOL            shift and go to state 55
+    OFFSET          shift and go to state 56
+    GROUP_RIGHT     shift and go to state 57
+    GROUP_LEFT      shift and go to state 58
+    IGNORING        shift and go to state 59
+    ON              shift and go to state 60
+    WITHOUT         shift and go to state 61
+    BY              shift and go to state 62
+    UNLESS          shift and go to state 63
+    OR              shift and go to state 64
+    AND             shift and go to state 65
+
+    labelNameList2                 shift and go to state 131
+    labelName                      shift and go to state 132
+    keyword                        shift and go to state 52
+
+state 108
+
+    (69) aggregation -> AGGREGATION_OPERATOR BY labelNameList . parameterList
+    (65) parameterList -> . LEFT_PAREN parameterList2 RIGHT_PAREN
+    LEFT_PAREN      shift and go to state 70
+
+    parameterList                  shift and go to state 133
+
+state 109
+
+    (65) parameterList -> LEFT_PAREN parameterList2 . RIGHT_PAREN
+    RIGHT_PAREN     shift and go to state 134
+
+
+state 110
+
+    (63) parameterList2 -> parameter .
+    (64) parameterList2 -> parameter . COMMA parameterList2
+    RIGHT_PAREN     reduce using rule 63 (parameterList2 -> parameter .)
+    COMMA           shift and go to state 135
+
+
+state 111
+
+    (61) parameter -> vectorOperation .
+    (2) vectorOperation -> vectorOperation . orOp vectorOperation
+    (3) vectorOperation -> vectorOperation . andUnlessOp vectorOperation
+    (4) vectorOperation -> vectorOperation . compareOp vectorOperation
+    (5) vectorOperation -> vectorOperation . addOp vectorOperation
+    (6) vectorOperation -> vectorOperation . multOp vectorOperation
+    (8) vectorOperation -> vectorOperation . powOp vectorOperation
+    (37) orOp -> . OR
+    (38) orOp -> . OR grouping
+    (33) andUnlessOp -> . UNLESS
+    (34) andUnlessOp -> . AND
+    (35) andUnlessOp -> . UNLESS grouping
+    (36) andUnlessOp -> . AND grouping
+    (23) compareOp -> . compareOps
+    (24) compareOp -> . compareOps BOOL
+    (25) compareOp -> . compareOps grouping
+    (26) compareOp -> . compareOps BOOL grouping
+    (19) addOp -> . SUB
+    (20) addOp -> . ADD
+    (21) addOp -> . SUB grouping
+    (22) addOp -> . ADD grouping
+    (13) multOp -> . MOD
+    (14) multOp -> . DIV
+    (15) multOp -> . MULT
+    (16) multOp -> . MOD grouping
+    (17) multOp -> . DIV grouping
+    (18) multOp -> . MULT grouping
+    (11) powOp -> . POW
+    (12) powOp -> . POW grouping
+    (27) compareOps -> . LE
+    (28) compareOps -> . GE
+    (29) compareOps -> . LT
+    (30) compareOps -> . GT
+    (31) compareOps -> . NE
+    (32) compareOps -> . DEQ
+    COMMA           reduce using rule 61 (parameter -> vectorOperation .)
+    RIGHT_PAREN     reduce using rule 61 (parameter -> vectorOperation .)
+    OR              shift and go to state 26
+    UNLESS          shift and go to state 27
+    AND             shift and go to state 28
+    SUB             shift and go to state 30
+    ADD             shift and go to state 31
+    MOD             shift and go to state 32
+    DIV             shift and go to state 33
+    MULT            shift and go to state 34
+    POW             shift and go to state 35
+    LE              shift and go to state 36
+    GE              shift and go to state 37
+    LT              shift and go to state 38
+    GT              shift and go to state 39
+    NE              shift and go to state 40
+    DEQ             shift and go to state 41
+
+    orOp                           shift and go to state 20
+    andUnlessOp                    shift and go to state 21
+    compareOp                      shift and go to state 22
+    addOp                          shift and go to state 23
+    multOp                         shift and go to state 24
+    powOp                          shift and go to state 25
+    compareOps                     shift and go to state 29
+
+state 112
+
+    (62) parameter -> literal .
+    (40) vector -> literal .
+  ! reduce/reduce conflict for COMMA resolved using rule 40 (vector -> literal .)
+  ! reduce/reduce conflict for RIGHT_PAREN resolved using rule 40 (vector -> literal .)
+    OR              reduce using rule 40 (vector -> literal .)
+    UNLESS          reduce using rule 40 (vector -> literal .)
+    AND             reduce using rule 40 (vector -> literal .)
+    SUB             reduce using rule 40 (vector -> literal .)
+    ADD             reduce using rule 40 (vector -> literal .)
+    MOD             reduce using rule 40 (vector -> literal .)
+    DIV             reduce using rule 40 (vector -> literal .)
+    MULT            reduce using rule 40 (vector -> literal .)
+    POW             reduce using rule 40 (vector -> literal .)
+    LE              reduce using rule 40 (vector -> literal .)
+    GE              reduce using rule 40 (vector -> literal .)
+    LT              reduce using rule 40 (vector -> literal .)
+    GT              reduce using rule 40 (vector -> literal .)
+    NE              reduce using rule 40 (vector -> literal .)
+    DEQ             reduce using rule 40 (vector -> literal .)
+    COMMA           reduce using rule 40 (vector -> literal .)
+    RIGHT_PAREN     reduce using rule 40 (vector -> literal .)
+
+
+state 113
+
+    (73) grouping -> ignoring groupRight .
+    SUB             reduce using rule 73 (grouping -> ignoring groupRight .)
+    ADD             reduce using rule 73 (grouping -> ignoring groupRight .)
+    LEFT_PAREN      reduce using rule 73 (grouping -> ignoring groupRight .)
+    STRING          reduce using rule 73 (grouping -> ignoring groupRight .)
+    NUMBER          reduce using rule 73 (grouping -> ignoring groupRight .)
+    LEFT_BRACE      reduce using rule 73 (grouping -> ignoring groupRight .)
+    METRIC_NAME     reduce using rule 73 (grouping -> ignoring groupRight .)
+    AGGREGATION_OPERATOR reduce using rule 73 (grouping -> ignoring groupRight .)
+    FUNCTION        reduce using rule 73 (grouping -> ignoring groupRight .)
+
+
+state 114
+
+    (74) grouping -> ignoring groupLeft .
+    SUB             reduce using rule 74 (grouping -> ignoring groupLeft .)
+    ADD             reduce using rule 74 (grouping -> ignoring groupLeft .)
+    LEFT_PAREN      reduce using rule 74 (grouping -> ignoring groupLeft .)
+    STRING          reduce using rule 74 (grouping -> ignoring groupLeft .)
+    NUMBER          reduce using rule 74 (grouping -> ignoring groupLeft .)
+    LEFT_BRACE      reduce using rule 74 (grouping -> ignoring groupLeft .)
+    METRIC_NAME     reduce using rule 74 (grouping -> ignoring groupLeft .)
+    AGGREGATION_OPERATOR reduce using rule 74 (grouping -> ignoring groupLeft .)
+    FUNCTION        reduce using rule 74 (grouping -> ignoring groupLeft .)
+
+
+state 115
+
+    (80) groupRight -> GROUP_RIGHT . labelNameList
+    (86) labelNameList -> . LEFT_PAREN labelNameList2 RIGHT_PAREN
+    LEFT_PAREN      shift and go to state 107
+
+    labelNameList                  shift and go to state 136
+
+state 116
+
+    (79) groupLeft -> GROUP_LEFT . labelNameList
+    (86) labelNameList -> . LEFT_PAREN labelNameList2 RIGHT_PAREN
+    LEFT_PAREN      shift and go to state 107
+
+    labelNameList                  shift and go to state 137
+
+state 117
+
+    (75) grouping -> on groupRight .
+    SUB             reduce using rule 75 (grouping -> on groupRight .)
+    ADD             reduce using rule 75 (grouping -> on groupRight .)
+    LEFT_PAREN      reduce using rule 75 (grouping -> on groupRight .)
+    STRING          reduce using rule 75 (grouping -> on groupRight .)
+    NUMBER          reduce using rule 75 (grouping -> on groupRight .)
+    LEFT_BRACE      reduce using rule 75 (grouping -> on groupRight .)
+    METRIC_NAME     reduce using rule 75 (grouping -> on groupRight .)
+    AGGREGATION_OPERATOR reduce using rule 75 (grouping -> on groupRight .)
+    FUNCTION        reduce using rule 75 (grouping -> on groupRight .)
+
+
+state 118
+
+    (76) grouping -> on groupLeft .
+    SUB             reduce using rule 76 (grouping -> on groupLeft .)
+    ADD             reduce using rule 76 (grouping -> on groupLeft .)
+    LEFT_PAREN      reduce using rule 76 (grouping -> on groupLeft .)
+    STRING          reduce using rule 76 (grouping -> on groupLeft .)
+    NUMBER          reduce using rule 76 (grouping -> on groupLeft .)
+    LEFT_BRACE      reduce using rule 76 (grouping -> on groupLeft .)
+    METRIC_NAME     reduce using rule 76 (grouping -> on groupLeft .)
+    AGGREGATION_OPERATOR reduce using rule 76 (grouping -> on groupLeft .)
+    FUNCTION        reduce using rule 76 (grouping -> on groupLeft .)
+
+
+state 119
+
+    (78) ignoring -> IGNORING labelNameList .
+    GROUP_RIGHT     reduce using rule 78 (ignoring -> IGNORING labelNameList .)
+    GROUP_LEFT      reduce using rule 78 (ignoring -> IGNORING labelNameList .)
+    SUB             reduce using rule 78 (ignoring -> IGNORING labelNameList .)
+    ADD             reduce using rule 78 (ignoring -> IGNORING labelNameList .)
+    LEFT_PAREN      reduce using rule 78 (ignoring -> IGNORING labelNameList .)
+    STRING          reduce using rule 78 (ignoring -> IGNORING labelNameList .)
+    NUMBER          reduce using rule 78 (ignoring -> IGNORING labelNameList .)
+    LEFT_BRACE      reduce using rule 78 (ignoring -> IGNORING labelNameList .)
+    METRIC_NAME     reduce using rule 78 (ignoring -> IGNORING labelNameList .)
+    AGGREGATION_OPERATOR reduce using rule 78 (ignoring -> IGNORING labelNameList .)
+    FUNCTION        reduce using rule 78 (ignoring -> IGNORING labelNameList .)
+
+
+state 120
+
+    (77) on -> ON labelNameList .
+    GROUP_RIGHT     reduce using rule 77 (on -> ON labelNameList .)
+    GROUP_LEFT      reduce using rule 77 (on -> ON labelNameList .)
+    SUB             reduce using rule 77 (on -> ON labelNameList .)
+    ADD             reduce using rule 77 (on -> ON labelNameList .)
+    LEFT_PAREN      reduce using rule 77 (on -> ON labelNameList .)
+    STRING          reduce using rule 77 (on -> ON labelNameList .)
+    NUMBER          reduce using rule 77 (on -> ON labelNameList .)
+    LEFT_BRACE      reduce using rule 77 (on -> ON labelNameList .)
+    METRIC_NAME     reduce using rule 77 (on -> ON labelNameList .)
+    AGGREGATION_OPERATOR reduce using rule 77 (on -> ON labelNameList .)
+    FUNCTION        reduce using rule 77 (on -> ON labelNameList .)
+
+
+state 121
+
+    (26) compareOp -> compareOps BOOL grouping .
+    SUB             reduce using rule 26 (compareOp -> compareOps BOOL grouping .)
+    ADD             reduce using rule 26 (compareOp -> compareOps BOOL grouping .)
+    LEFT_PAREN      reduce using rule 26 (compareOp -> compareOps BOOL grouping .)
+    STRING          reduce using rule 26 (compareOp -> compareOps BOOL grouping .)
+    NUMBER          reduce using rule 26 (compareOp -> compareOps BOOL grouping .)
+    LEFT_BRACE      reduce using rule 26 (compareOp -> compareOps BOOL grouping .)
+    METRIC_NAME     reduce using rule 26 (compareOp -> compareOps BOOL grouping .)
+    AGGREGATION_OPERATOR reduce using rule 26 (compareOp -> compareOps BOOL grouping .)
+    FUNCTION        reduce using rule 26 (compareOp -> compareOps BOOL grouping .)
+
+
+state 122
+
+    (56) labelMatcherList -> labelMatcher COMMA labelMatcherList .
+    RIGHT_BRACE     reduce using rule 56 (labelMatcherList -> labelMatcher COMMA labelMatcherList .)
+
+
+state 123
+
+    (51) labelMatcher -> labelName NRE STRING .
+    COMMA           reduce using rule 51 (labelMatcher -> labelName NRE STRING .)
+    RIGHT_BRACE     reduce using rule 51 (labelMatcher -> labelName NRE STRING .)
+
+
+state 124
+
+    (52) labelMatcher -> labelName RE STRING .
+    COMMA           reduce using rule 52 (labelMatcher -> labelName RE STRING .)
+    RIGHT_BRACE     reduce using rule 52 (labelMatcher -> labelName RE STRING .)
+
+
+state 125
+
+    (53) labelMatcher -> labelName NE STRING .
+    COMMA           reduce using rule 53 (labelMatcher -> labelName NE STRING .)
+    RIGHT_BRACE     reduce using rule 53 (labelMatcher -> labelName NE STRING .)
+
+
+state 126
+
+    (54) labelMatcher -> labelName EQ STRING .
+    COMMA           reduce using rule 54 (labelMatcher -> labelName EQ STRING .)
+    RIGHT_BRACE     reduce using rule 54 (labelMatcher -> labelName EQ STRING .)
+
+
+state 127
+
+    (50) instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .
+    OFFSET          reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    TIME_RANGE      reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    OR              reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    UNLESS          reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    AND             reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    SUB             reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    ADD             reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    MOD             reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    DIV             reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    MULT            reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    POW             reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    LE              reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    GE              reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    LT              reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    GT              reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    NE              reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    DEQ             reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    $end            reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    RIGHT_PAREN     reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+    COMMA           reduce using rule 50 (instantSelector -> METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE .)
+
+
+state 128
+
+    (66) aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .
+    OR              reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    UNLESS          reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    AND             reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    SUB             reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    ADD             reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    MOD             reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    DIV             reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    MULT            reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    POW             reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    LE              reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    GE              reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    LT              reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    GT              reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    NE              reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    DEQ             reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    $end            reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    RIGHT_PAREN     reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+    COMMA           reduce using rule 66 (aggregation -> AGGREGATION_OPERATOR parameterList WITHOUT labelNameList .)
+
+
+state 129
+
+    (67) aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .
+    OR              reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    UNLESS          reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    AND             reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    SUB             reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    ADD             reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    MOD             reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    DIV             reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    MULT            reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    POW             reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    LE              reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    GE              reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    LT              reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    GT              reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    NE              reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    DEQ             reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    $end            reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    RIGHT_PAREN     reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+    COMMA           reduce using rule 67 (aggregation -> AGGREGATION_OPERATOR parameterList BY labelNameList .)
+
+
+state 130
+
+    (68) aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .
+    OR              reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    UNLESS          reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    AND             reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    SUB             reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    ADD             reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    MOD             reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    DIV             reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    MULT            reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    POW             reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    LE              reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    GE              reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    LT              reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    GT              reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    NE              reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    DEQ             reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    $end            reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    RIGHT_PAREN     reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+    COMMA           reduce using rule 68 (aggregation -> AGGREGATION_OPERATOR WITHOUT labelNameList parameterList .)
+
+
+state 131
+
+    (86) labelNameList -> LEFT_PAREN labelNameList2 . RIGHT_PAREN
+    RIGHT_PAREN     shift and go to state 138
+
+
+state 132
+
+    (84) labelNameList2 -> labelName .
+    (85) labelNameList2 -> labelName . COMMA labelNameList2
+    RIGHT_PAREN     reduce using rule 84 (labelNameList2 -> labelName .)
+    COMMA           shift and go to state 139
+
+
+state 133
+
+    (69) aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .
+    OR              reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    UNLESS          reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    AND             reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    SUB             reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    ADD             reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    MOD             reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    DIV             reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    MULT            reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    POW             reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    LE              reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    GE              reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    LT              reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    GT              reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    NE              reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    DEQ             reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    $end            reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    RIGHT_PAREN     reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+    COMMA           reduce using rule 69 (aggregation -> AGGREGATION_OPERATOR BY labelNameList parameterList .)
+
+
+state 134
+
+    (65) parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .
+    WITHOUT         reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    BY              reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    OR              reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    UNLESS          reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    AND             reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    SUB             reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    ADD             reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    MOD             reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    DIV             reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    MULT            reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    POW             reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    LE              reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    GE              reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    LT              reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    GT              reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    NE              reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    DEQ             reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    $end            reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    RIGHT_PAREN     reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+    COMMA           reduce using rule 65 (parameterList -> LEFT_PAREN parameterList2 RIGHT_PAREN .)
+
+
+state 135
+
+    (64) parameterList2 -> parameter COMMA . parameterList2
+    (63) parameterList2 -> . parameter
+    (64) parameterList2 -> . parameter COMMA parameterList2
+    (61) parameter -> . vectorOperation
+    (62) parameter -> . literal
+    (1) vectorOperation -> . vector
+    (2) vectorOperation -> . vectorOperation orOp vectorOperation
+    (3) vectorOperation -> . vectorOperation andUnlessOp vectorOperation
+    (4) vectorOperation -> . vectorOperation compareOp vectorOperation
+    (5) vectorOperation -> . vectorOperation addOp vectorOperation
+    (6) vectorOperation -> . vectorOperation multOp vectorOperation
+    (7) vectorOperation -> . unaryOp vectorOperation
+    (8) vectorOperation -> . vectorOperation powOp vectorOperation
+    (100) literal -> . STRING
+    (101) literal -> . NUMBER
+    (39) vector -> . parens
+    (40) vector -> . literal
+    (41) vector -> . offset
+    (42) vector -> . matrixSelector
+    (43) vector -> . instantSelector
+    (44) vector -> . aggregation
+    (45) vector -> . function
+    (9) unaryOp -> . SUB
+    (10) unaryOp -> . ADD
+    (46) parens -> . LEFT_PAREN vectorOperation RIGHT_PAREN
+    (58) offset -> . matrixSelector OFFSET DURATION
+    (59) offset -> . instantSelector OFFSET DURATION
+    (57) matrixSelector -> . instantSelector TIME_RANGE
+    (47) instantSelector -> . LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (48) instantSelector -> . METRIC_NAME
+    (49) instantSelector -> . METRIC_NAME LEFT_BRACE RIGHT_BRACE
+    (50) instantSelector -> . METRIC_NAME LEFT_BRACE labelMatcherList RIGHT_BRACE
+    (66) aggregation -> . AGGREGATION_OPERATOR parameterList WITHOUT labelNameList
+    (67) aggregation -> . AGGREGATION_OPERATOR parameterList BY labelNameList
+    (68) aggregation -> . AGGREGATION_OPERATOR WITHOUT labelNameList parameterList
+    (69) aggregation -> . AGGREGATION_OPERATOR BY labelNameList parameterList
+    (70) aggregation -> . AGGREGATION_OPERATOR parameterList
+    (60) function -> . FUNCTION parameterList
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 15
+    SUB             shift and go to state 11
+    ADD             shift and go to state 12
+    LEFT_PAREN      shift and go to state 13
+    LEFT_BRACE      shift and go to state 16
+    METRIC_NAME     shift and go to state 17
+    AGGREGATION_OPERATOR shift and go to state 18
+    FUNCTION        shift and go to state 19
+
+    parameter                      shift and go to state 110
+    parameterList2                 shift and go to state 140
+    vectorOperation                shift and go to state 111
+    literal                        shift and go to state 112
+    vector                         shift and go to state 2
+    unaryOp                        shift and go to state 3
+    parens                         shift and go to state 4
+    offset                         shift and go to state 6
+    matrixSelector                 shift and go to state 7
+    instantSelector                shift and go to state 8
+    aggregation                    shift and go to state 9
+    function                       shift and go to state 10
+
+state 136
+
+    (80) groupRight -> GROUP_RIGHT labelNameList .
+    SUB             reduce using rule 80 (groupRight -> GROUP_RIGHT labelNameList .)
+    ADD             reduce using rule 80 (groupRight -> GROUP_RIGHT labelNameList .)
+    LEFT_PAREN      reduce using rule 80 (groupRight -> GROUP_RIGHT labelNameList .)
+    STRING          reduce using rule 80 (groupRight -> GROUP_RIGHT labelNameList .)
+    NUMBER          reduce using rule 80 (groupRight -> GROUP_RIGHT labelNameList .)
+    LEFT_BRACE      reduce using rule 80 (groupRight -> GROUP_RIGHT labelNameList .)
+    METRIC_NAME     reduce using rule 80 (groupRight -> GROUP_RIGHT labelNameList .)
+    AGGREGATION_OPERATOR reduce using rule 80 (groupRight -> GROUP_RIGHT labelNameList .)
+    FUNCTION        reduce using rule 80 (groupRight -> GROUP_RIGHT labelNameList .)
+
+
+state 137
+
+    (79) groupLeft -> GROUP_LEFT labelNameList .
+    SUB             reduce using rule 79 (groupLeft -> GROUP_LEFT labelNameList .)
+    ADD             reduce using rule 79 (groupLeft -> GROUP_LEFT labelNameList .)
+    LEFT_PAREN      reduce using rule 79 (groupLeft -> GROUP_LEFT labelNameList .)
+    STRING          reduce using rule 79 (groupLeft -> GROUP_LEFT labelNameList .)
+    NUMBER          reduce using rule 79 (groupLeft -> GROUP_LEFT labelNameList .)
+    LEFT_BRACE      reduce using rule 79 (groupLeft -> GROUP_LEFT labelNameList .)
+    METRIC_NAME     reduce using rule 79 (groupLeft -> GROUP_LEFT labelNameList .)
+    AGGREGATION_OPERATOR reduce using rule 79 (groupLeft -> GROUP_LEFT labelNameList .)
+    FUNCTION        reduce using rule 79 (groupLeft -> GROUP_LEFT labelNameList .)
+
+
+state 138
+
+    (86) labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .
+    LEFT_PAREN      reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    GROUP_RIGHT     reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    GROUP_LEFT      reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    SUB             reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    ADD             reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    STRING          reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    NUMBER          reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    LEFT_BRACE      reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    METRIC_NAME     reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    AGGREGATION_OPERATOR reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    FUNCTION        reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    OR              reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    UNLESS          reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    AND             reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    MOD             reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    DIV             reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    MULT            reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    POW             reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    LE              reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    GE              reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    LT              reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    GT              reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    NE              reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    DEQ             reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    $end            reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    RIGHT_PAREN     reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+    COMMA           reduce using rule 86 (labelNameList -> LEFT_PAREN labelNameList2 RIGHT_PAREN .)
+
+
+state 139
+
+    (85) labelNameList2 -> labelName COMMA . labelNameList2
+    (84) labelNameList2 -> . labelName
+    (85) labelNameList2 -> . labelName COMMA labelNameList2
+    (81) labelName -> . LABEL_NAME
+    (82) labelName -> . METRIC_NAME
+    (83) labelName -> . keyword
+    (87) keyword -> . FUNCTION
+    (88) keyword -> . AGGREGATION_OPERATOR
+    (89) keyword -> . BOOL
+    (90) keyword -> . OFFSET
+    (91) keyword -> . GROUP_RIGHT
+    (92) keyword -> . GROUP_LEFT
+    (93) keyword -> . IGNORING
+    (94) keyword -> . ON
+    (95) keyword -> . WITHOUT
+    (96) keyword -> . BY
+    (97) keyword -> . UNLESS
+    (98) keyword -> . OR
+    (99) keyword -> . AND
+    LABEL_NAME      shift and go to state 50
+    METRIC_NAME     shift and go to state 51
+    FUNCTION        shift and go to state 53
+    AGGREGATION_OPERATOR shift and go to state 54
+    BOOL            shift and go to state 55
+    OFFSET          shift and go to state 56
+    GROUP_RIGHT     shift and go to state 57
+    GROUP_LEFT      shift and go to state 58
+    IGNORING        shift and go to state 59
+    ON              shift and go to state 60
+    WITHOUT         shift and go to state 61
+    BY              shift and go to state 62
+    UNLESS          shift and go to state 63
+    OR              shift and go to state 64
+    AND             shift and go to state 65
+
+    labelName                      shift and go to state 132
+    labelNameList2                 shift and go to state 141
+    keyword                        shift and go to state 52
+
+state 140
+
+    (64) parameterList2 -> parameter COMMA parameterList2 .
+    RIGHT_PAREN     reduce using rule 64 (parameterList2 -> parameter COMMA parameterList2 .)
+
+
+state 141
+
+    (85) labelNameList2 -> labelName COMMA labelNameList2 .
+    RIGHT_PAREN     reduce using rule 85 (labelNameList2 -> labelName COMMA labelNameList2 .)
+
+
+Conflicts:
+
+shift/reduce conflict for OR in state 72 resolved as shift
+shift/reduce conflict for UNLESS in state 72 resolved as shift
+shift/reduce conflict for AND in state 72 resolved as shift
+shift/reduce conflict for SUB in state 72 resolved as shift
+shift/reduce conflict for ADD in state 72 resolved as shift
+shift/reduce conflict for MOD in state 72 resolved as shift
+shift/reduce conflict for DIV in state 72 resolved as shift
+shift/reduce conflict for MULT in state 72 resolved as shift
+shift/reduce conflict for POW in state 72 resolved as shift
+shift/reduce conflict for LE in state 72 resolved as shift
+shift/reduce conflict for GE in state 72 resolved as shift
+shift/reduce conflict for LT in state 72 resolved as shift
+shift/reduce conflict for GT in state 72 resolved as shift
+shift/reduce conflict for NE in state 72 resolved as shift
+shift/reduce conflict for DEQ in state 72 resolved as shift
+shift/reduce conflict for OR in state 73 resolved as shift
+shift/reduce conflict for UNLESS in state 73 resolved as shift
+shift/reduce conflict for AND in state 73 resolved as shift
+shift/reduce conflict for SUB in state 73 resolved as shift
+shift/reduce conflict for ADD in state 73 resolved as shift
+shift/reduce conflict for MOD in state 73 resolved as shift
+shift/reduce conflict for DIV in state 73 resolved as shift
+shift/reduce conflict for MULT in state 73 resolved as shift
+shift/reduce conflict for POW in state 73 resolved as shift
+shift/reduce conflict for LE in state 73 resolved as shift
+shift/reduce conflict for GE in state 73 resolved as shift
+shift/reduce conflict for LT in state 73 resolved as shift
+shift/reduce conflict for GT in state 73 resolved as shift
+shift/reduce conflict for NE in state 73 resolved as shift
+shift/reduce conflict for DEQ in state 73 resolved as shift
+shift/reduce conflict for OR in state 74 resolved as shift
+shift/reduce conflict for UNLESS in state 74 resolved as shift
+shift/reduce conflict for AND in state 74 resolved as shift
+shift/reduce conflict for SUB in state 74 resolved as shift
+shift/reduce conflict for ADD in state 74 resolved as shift
+shift/reduce conflict for MOD in state 74 resolved as shift
+shift/reduce conflict for DIV in state 74 resolved as shift
+shift/reduce conflict for MULT in state 74 resolved as shift
+shift/reduce conflict for POW in state 74 resolved as shift
+shift/reduce conflict for LE in state 74 resolved as shift
+shift/reduce conflict for GE in state 74 resolved as shift
+shift/reduce conflict for LT in state 74 resolved as shift
+shift/reduce conflict for GT in state 74 resolved as shift
+shift/reduce conflict for NE in state 74 resolved as shift
+shift/reduce conflict for DEQ in state 74 resolved as shift
+shift/reduce conflict for OR in state 75 resolved as shift
+shift/reduce conflict for UNLESS in state 75 resolved as shift
+shift/reduce conflict for AND in state 75 resolved as shift
+shift/reduce conflict for SUB in state 75 resolved as shift
+shift/reduce conflict for ADD in state 75 resolved as shift
+shift/reduce conflict for MOD in state 75 resolved as shift
+shift/reduce conflict for DIV in state 75 resolved as shift
+shift/reduce conflict for MULT in state 75 resolved as shift
+shift/reduce conflict for POW in state 75 resolved as shift
+shift/reduce conflict for LE in state 75 resolved as shift
+shift/reduce conflict for GE in state 75 resolved as shift
+shift/reduce conflict for LT in state 75 resolved as shift
+shift/reduce conflict for GT in state 75 resolved as shift
+shift/reduce conflict for NE in state 75 resolved as shift
+shift/reduce conflict for DEQ in state 75 resolved as shift
+shift/reduce conflict for OR in state 76 resolved as shift
+shift/reduce conflict for UNLESS in state 76 resolved as shift
+shift/reduce conflict for AND in state 76 resolved as shift
+shift/reduce conflict for SUB in state 76 resolved as shift
+shift/reduce conflict for ADD in state 76 resolved as shift
+shift/reduce conflict for MOD in state 76 resolved as shift
+shift/reduce conflict for DIV in state 76 resolved as shift
+shift/reduce conflict for MULT in state 76 resolved as shift
+shift/reduce conflict for POW in state 76 resolved as shift
+shift/reduce conflict for LE in state 76 resolved as shift
+shift/reduce conflict for GE in state 76 resolved as shift
+shift/reduce conflict for LT in state 76 resolved as shift
+shift/reduce conflict for GT in state 76 resolved as shift
+shift/reduce conflict for NE in state 76 resolved as shift
+shift/reduce conflict for DEQ in state 76 resolved as shift
+reduce/reduce conflict in state 112 resolved using rule vector -> literal
+rejected rule (parameter -> literal) in state 112
+Rule (parameter -> literal) is never reduced

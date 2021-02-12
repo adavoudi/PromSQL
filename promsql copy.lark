@@ -1,0 +1,216 @@
+// Binary operations are ordered by precedence
+
+// Unary operations have the same precedence as multiplications
+
+vector_operation : vector_operation pow_op vector_operation
+    | unary_op vector_operation
+    | vector_operation mult_op vector_operation
+    | vector_operation add_op vector_operation
+    | vector_operation compare_op vector_operation
+    | vector_operation and_unless_op vector_operation
+    | vector_operation or_op vector_operation
+    | vector
+
+// Operators
+
+unary_op:     (ADD | SUB)
+pow_op:       POW grouping?
+mult_op:      (MULT | DIV | MOD) grouping?
+add_op:       (ADD | SUB) grouping?
+compare_op:   (DEQ | NE | GT | LT | GE | LE) BOOL? grouping?
+and_unless_op: (AND | UNLESS) grouping?
+or_op:        OR grouping?
+
+vector : function
+    | aggregation
+    | instant_selector
+    | matrix_selector
+    | offset
+    | literal
+    | parens
+
+parens: "(" vector_operation ")"
+
+// Selectors
+
+instant_selector : (METRIC_NAME ("{" label_matcher_list? "}")?)
+    | ("{" label_matcher_list "}")
+
+label_matcher:         label_name label_matcher_operator STRING
+label_matcher_operator: EQ | NE | RE | NRE
+label_matcher_list:     label_matcher ("," label_matcher)*
+
+matrix_selector: instant_selector TIME_RANGE
+
+offset : instant_selector OFFSET DURATION
+    | matrix_selector OFFSET DURATION
+
+// Functions
+
+function: FUNCTION "(" parameter ("," parameter)* ")"
+
+parameter:     literal | vector_operation
+parameter_list: "(" (parameter ("," parameter)*)? ")"
+
+// Aggregations
+
+aggregation : AGGREGATION_OPERATOR parameter_list
+    | AGGREGATION_OPERATOR (by | without) parameter_list
+    | AGGREGATION_OPERATOR parameter_list ( by | without)
+    
+by:      BY label_name_list
+without: WITHOUT label_name_list
+
+// Vector one-to-one/one-to-many joins
+
+grouping:   (on | ignoring) (group_left | group_right)?
+on:         ON label_name_list
+ignoring:   IGNORING label_name_list
+group_left:  GROUP_LEFT label_name_list
+group_right: GROUP_RIGHT label_name_list
+
+// Label names
+
+label_name:     keyword | METRIC_NAME | LABEL_NAME
+label_name_list: "(" (label_name ("," label_name)*)? ")"
+
+keyword : AND
+    | OR
+    | UNLESS
+    | BY
+    | WITHOUT
+    | ON
+    | IGNORING
+    | GROUP_LEFT
+    | GROUP_RIGHT
+    | OFFSET
+    | BOOL
+    | AGGREGATION_OPERATOR
+    | FUNCTION
+
+literal: NUMBER | STRING
+
+
+////////////////////LEXER
+
+NUMBER: /\d+(\.\d+)?/
+STRING: /\'([^\'\\]|\\.)*\'|"([^"\\]|\\.)*"/
+
+
+// Binary operators
+
+ADD:  "+"
+SUB:  "-"
+MULT: "*"
+DIV:  "/"
+MOD:  "%"
+POW:  "^"
+
+AND:    "and"
+OR:     "or"
+UNLESS: "unless"
+
+// Comparison operators
+
+EQ:  "="
+DEQ: "=="
+NE:  "!="
+GT:  ">"
+LT:  "<"
+GE:  ">="
+LE:  "<="
+RE:  "=~"
+NRE: "!~"
+
+// Aggregation modifiers
+
+BY:      "by"
+WITHOUT: "without"
+
+// Join modifiers
+
+ON:          "on"
+IGNORING:    "ignoring"
+GROUP_LEFT:  "group_left"
+GROUP_RIGHT: "group_right"
+
+OFFSET: "offset"
+
+BOOL: "bool"
+
+AGGREGATION_OPERATOR : "sum"
+    | "min"
+    | "max"
+    | "avg"
+    | "group"
+    | "stddev"
+    | "stdvar"
+    | "count"
+    | "count_values"
+    | "bottomk"
+    | "topk"
+    | "quantile"
+
+FUNCTION : "abs"
+    | "absent"
+    | "absent_over_time"
+    | "ceil"
+    | "changes"
+    | "clamp_max"
+    | "clamp_min"
+    | "day_of_month"
+    | "day_of_week"
+    | "days_in_month"
+    | "delta"
+    | "deriv"
+    | "exp"
+    | "floor"
+    | "histogram_quantile"
+    | "holt_winters"
+    | "hour"
+    | "idelta"
+    | "increase"
+    | "irate"
+    | "label_join"
+    | "label_replace"
+    | "ln"
+    | "log2"
+    | "log10"
+    | "minute"
+    | "month"
+    | "predict_linear"
+    | "rate"
+    | "resets"
+    | "round"
+    | "scalar"
+    | "sort"
+    | "sort_desc"
+    | "sqrt"
+    | "time"
+    | "timestamp"
+    | "vector"
+    | "year"
+    | "avg_over_time"
+    | "min_over_time"
+    | "max_over_time"
+    | "sum_over_time"
+    | "count_over_time"
+    | "quantile_over_time"
+    | "stddev_over_time"
+    | "stdvar_over_time"
+
+TIME_RANGE : ("[" DURATION "]")
+    | ("[" DURATION ":" DURATION? "]")
+
+// TIME_RANGE : /\[\d+(s|m|h|d|w|y)\]|\[\d+(s|m|h|d|w|y):(\d+(s|m|h|d|w|y))?\]/
+
+DURATION: /\d+(s|m|h|d|w|y)/
+
+METRIC_NAME: /[a-zA-Z_:][a-zA-Z0-9_:]*/
+LABEL_NAME: /[a-zA-Z_][a-zA-Z0-9_]*/
+
+%import common.WS
+%ignore WS
+
+COMMENT: "#" /[^\n]/*
+%ignore COMMENT
