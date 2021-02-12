@@ -15,7 +15,8 @@ class MyTransformer(Transformer):
 
 parser = Lark(grammar, start="start")
 
-text = '((- a ^ 2 * b + c) > 1) and d or e'
+text = "container_cpu_usage_seconds_total[5m:]"
+
 tree = parser.parse(text)
 print(MyTransformer().transform(tree).pretty())
 

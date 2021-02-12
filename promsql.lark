@@ -251,11 +251,11 @@ POW:       "^"
 IDENTIFIER: /[a-zA-Z_][a-zA-Z0-9_]*/
 METRIC_IDENTIFIER: /[a-zA-Z_:][a-zA-Z0-9_:]*/
 
-NUMBER : /\d+(\.\d+)?/
-
-STRING : /'\'([^\'\\]|\\.)*\'|"([^"\\]|\\.)*"/
+STRING : /\'([^\'\\]|\\.)*\'|"([^"\\]|\\.)*"/
 
 DURATION : /\d+(s|m|h|d|w|y)/
+
+%import common.NUMBER
 
 %import common.WS
 %ignore WS
