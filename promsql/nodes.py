@@ -1,8 +1,16 @@
+import pandas as pd
+
+
 def list_to_str(input_list):
     return ",".join([str(item) for item in input_list])
 
 
-class AggregateExpr:
+class ExecutableExpr:
+    def eval(self):
+        raise NotImplementedError()
+
+
+class AggregateExpr(ExecutableExpr):
     def __init__(
         self, aggregate_op=None, aggregate_modifier=None, function_call_body=None
     ):
@@ -12,6 +20,9 @@ class AggregateExpr:
 
     def __str__(self):
         return f"AggregateExpr({self.aggregate_op}, {self.aggregate_modifier}, {list_to_str(self.function_call_body)})"
+
+    def eval(self):
+        pass
 
 
 class AggregateModifier:
@@ -23,7 +34,7 @@ class AggregateModifier:
         return f"AggregateModifier({self.grouping}, {self.without})"
 
 
-class BinaryExpression:
+class BinaryExpression(ExecutableExpr):
     def __init__(self, op=None, left_expr=None, right_expr=None, bin_modifier=None):
         self.op = op
         self.left_expr = left_expr
@@ -32,6 +43,9 @@ class BinaryExpression:
 
     def __str__(self):
         return f"BinaryExpression({self.op}, {self.left_expr}, {self.right_expr}, {self.bin_modifier})"
+
+    def eval(self):
+        pass
 
 
 class BinaryExpr:
@@ -54,7 +68,7 @@ class VectorMatching:
         return f"VectorMatching({self.card}, {self.matching_labels}, {self.on}, {self.include})"
 
 
-class Function:
+class Function(ExecutableExpr):
     def __init__(self, name=None, args=None):
         self.name = name
         self.args = args
@@ -62,8 +76,11 @@ class Function:
     def __str__(self):
         return f"Function({self.name}, [{list_to_str(self.args)}])"
 
+    def eval(self):
+        pass
 
-class MatrixSelector:
+
+class MatrixSelector(ExecutableExpr):
     def __init__(self, vector_selector=None, _range=None, offset=0):
         self.vector_selector = vector_selector
         self.range = _range
@@ -72,8 +89,11 @@ class MatrixSelector:
     def __str__(self):
         return f"MatrixSelector({self.vector_selector}, {self.range}, {self.offset})"
 
+    def eval(self):
+        pass
 
-class SubqueryExpr:
+
+class SubqueryExpr(ExecutableExpr):
     def __init__(self, expr=None, _range=None, step=None, offset=0):
         self.expr = expr
         self.range = _range
@@ -83,8 +103,11 @@ class SubqueryExpr:
     def __str__(self):
         return f"SubqueryExpr({self.expr}, {self.range}, {self.step}, {self.offset})"
 
+    def eval(self):
+        pass
 
-class UnaryExpr:
+
+class UnaryExpr(ExecutableExpr):
     def __init__(self, op=None, expr=None):
         self.op = op
         self.expr = expr
@@ -92,8 +115,11 @@ class UnaryExpr:
     def __str__(self):
         return f"UnaryExpr({self.op}, {self.expr})"
 
+    def eval(self):
+        pass
 
-class VectorSelector:
+
+class VectorSelector(ExecutableExpr):
     def __init__(self, name=None, label_matchers={}, offset=0):
         self.name = name
         self.label_matchers = label_matchers
@@ -101,6 +127,9 @@ class VectorSelector:
 
     def __str__(self):
         return f"VectorSelector({self.name}, {self.label_matchers}, {self.offset})"
+
+    def eval(self):
+        print("hey")
 
 
 class SeriesDescription:

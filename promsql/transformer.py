@@ -43,6 +43,8 @@ class PromSqlTransformer(Transformer):
     def start(self, items):
         if items[0] is None:
             return "no expression found in input"
+        if isinstance(items[0], ExecutableExpr):
+            return items[0].eval()
         return items[0]
 
     def expr(self, items):
@@ -193,7 +195,7 @@ class PromSqlTransformer(Transformer):
     def metric(self, items):
         if len(items) == 2:
             result = items[1]
-            result.update({"__name__": items[0]})
+            result.update({"__name__": {"value": str(items[0]), "op": "="}})
         else:
             result = items[0]
         metric_name, label_matchers = get_vector_name(None, result)
