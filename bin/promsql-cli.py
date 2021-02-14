@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
-from promsql.lexer import PromSqlLexer
-from promsql.parser import PromSqlParser
+from promsql import *
 
 if __name__ == "__main__":
-    lexer = PromSqlLexer()
     parser = PromSqlParser()
+    transformer = PromSqlTransformer()
     while True:
         try:
             text = input("promsql > ")
-            result = parser.parse(lexer.tokenize(text))
-            print(result)
+            tree = parser.parse(text)
+            print(transformer.transform(tree))
         except EOFError:
             break

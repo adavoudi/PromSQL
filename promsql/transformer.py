@@ -1,10 +1,8 @@
-from lark import Lark
-from lark import Transformer
 import datetime
 import dateparser
-from nodes import *
+from lark import Transformer
 
-grammar = open("promsql.lark", "r").read()
+from .nodes import *
 
 
 def get_vector_name(metric_name, label_matchers):
@@ -41,7 +39,7 @@ def duration_literal_to_seconds(duration_literal: str) -> int:
     return seconds
 
 
-class MyTransformer(Transformer):
+class PromSqlTransformer(Transformer):
     def start(self, items):
         if items[0] is None:
             return "no expression found in input"
@@ -307,13 +305,3 @@ class MyTransformer(Transformer):
             else datetime.datetime.now(),
         )
         return result
-
-
-parser = Lark(grammar, start="start", parser="earley")
-
-text = 'rate(http_requests_total[5m])'
-
-tree = parser.parse(text)
-print(MyTransformer().transform(tree))
-
-# print(TreeToJson().transform(tree))

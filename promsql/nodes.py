@@ -1,159 +1,130 @@
-"""All AST nodes"""
+def list_to_str(input_list):
+    return ",".join([str(item) for item in input_list])
 
 
-class RangeVector:
-    """
-    Range vector literals work like instant vector literals, except that they select a range 
-    of samples back from the current instant. Syntactically, a time duration is appended in 
-    square brackets ([]) at the end of a vector selector to specify how far back in time values 
-    should be fetched for each resulting range vector element.
-    """
-    def __init__(self, name=None, time_range=None, tags=None, offset=None):
-        self.name = name
-        self.time_range = time_range
-        self.tags = tags
-        self.offset = offset
-
-    def __str__(self):
-        return f"RangeVector: {self.name}, tags: {self.tags}, time_range: {self.time_range}, offset: {self.offset}"
-
-
-class InstantVector:
-    """
-    Instant vector selectors allow the selection of a set of time series and a single sample value 
-    for each at a given timestamp (instant): in the simplest form, only a metric name is specified. 
-    This results in an instant vector containing elements for all time series that have this metric name.
-    """
-    def __init__(self, name=None, tags=None):
-        self.name = name
-        self.tags = tags
-
-    def __str__(self):
-        return f"InstantVector: {self.name}, tags: {self.tags}"
-
-
-class Scalar:
-    """
-    Scalar float values can be written as literal integer or floating-point numbers
-    """
-    def __init__(self, value=None):
-        self.value = value
-
-    def __str__(self):
-        return f"Scalar: {self.value}"
-
-
-class String:
-    """
-    Strings may be specified as literals in single quotes, double quotes or backticks.
-    """
-    def __init__(self, value=None):
-        self.value = value
-
-    def __str__(self):
-        return f"String: {self.value}"
-
-
-class Tag:
-    def __init__(self, name=None, op=None, value=None):
-        self.name = name
-        self.op = op
-        self.value = value
-
-    def __str__(self):
-        return f"Tag: {self.name} {self.op} {self.value}"
-
-
-class TagList:
-    def __init__(self, tags=None):
-        self.tags = tags
-
-    def __str__(self):
-        return ", ".join([str(item) for item in self.tags])
-
-
-class TimeRange:
-    def __init__(self, start=None, end=None):
-        self.start = start
-        self.end = end
-
-    def __str__(self):
-        return f"TimeRange: {self.start}, {self.end}"
-
-
-class Function:
-    def __init__(self, name=None, params=None):
-        self.name = name
-        self.params = params
-
-    def __str__(self):
-        return f"Function: {self.name}, params: {self.params}"
-
-
-class AggOp:
+class AggregateExpr:
     def __init__(
-        self,
-        name=None,
-        filter_method=None,
-        label_name_list=None,
-        params=None,
-        expr=None,
+        self, aggregate_op=None, aggregate_modifier=None, function_call_body=None
     ):
-        self.name = name
-        self.filter_method = filter_method
-        self.label_name_list = label_name_list
-        self.params = params
-        self.expr = expr
+        self.aggregate_op = aggregate_op
+        self.aggregate_modifier = aggregate_modifier
+        self.function_call_body = function_call_body
 
     def __str__(self):
-        return f"AggOp: {self.name}, filter_method: {self.filter_method}, label_name_list: {self.label_name_list}, expr: {self.expr}, params: {self.params}"
+        return f"AggregateExpr({self.aggregate_op}, {self.aggregate_modifier}, {list_to_str(self.function_call_body)})"
 
 
-class BinOp:
-    def __init__(
-        self,
-        op=None,
-        left_expr=None,
-        right_expr=None,
-        filter_method=None,
-        group_side=None,
-        filter_label_list=None,
-        group_label_list=None,
-        has_bool=None,
-    ):
+class AggregateModifier:
+    def __init__(self, grouping=None, without=None):
+        self.grouping = grouping
+        self.without = without
+
+    def __str__(self):
+        return f"AggregateModifier({self.grouping}, {self.without})"
+
+
+class BinaryExpression:
+    def __init__(self, op=None, left_expr=None, right_expr=None, bin_modifier=None):
         self.op = op
         self.left_expr = left_expr
         self.right_expr = right_expr
-        self.filter_method = filter_method
-        self.group_side = group_side
-        self.filter_label_list = filter_label_list
-        self.group_label_list = group_label_list
-        self.has_bool = has_bool
+        self.bin_modifier = bin_modifier
 
     def __str__(self):
-        return f"BinOp: {self.op}, left: ({self.left_expr}), right: ({self.right_expr}), filter_method: {self.filter_method}, group_side: {self.group_side}, filter_label_list: {self.filter_label_list}, group_label_list: {self.group_label_list}, has_bool: {self.has_bool}"
+        return f"BinaryExpression({self.op}, {self.left_expr}, {self.right_expr}, {self.bin_modifier})"
 
 
-class UnaryOp:
+class BinaryExpr:
+    def __init__(self, vector_matching=None, return_bool=False):
+        self.vector_matching = vector_matching
+        self.return_bool = return_bool
+
+    def __str__(self):
+        return f"BinaryExpr({self.vector_matching}, {self.return_bool})"
+
+
+class VectorMatching:
+    def __init__(self, card=None, matching_labels=None, on=False, include=None):
+        self.card = card
+        self.matching_labels = matching_labels
+        self.on = on
+        self.include = include
+
+    def __str__(self):
+        return f"VectorMatching({self.card}, {self.matching_labels}, {self.on}, {self.include})"
+
+
+class Function:
+    def __init__(self, name=None, args=None):
+        self.name = name
+        self.args = args
+
+    def __str__(self):
+        return f"Function({self.name}, [{list_to_str(self.args)}])"
+
+
+class MatrixSelector:
+    def __init__(self, vector_selector=None, _range=None, offset=0):
+        self.vector_selector = vector_selector
+        self.range = _range
+        self.offset = offset
+
+    def __str__(self):
+        return f"MatrixSelector({self.vector_selector}, {self.range}, {self.offset})"
+
+
+class SubqueryExpr:
+    def __init__(self, expr=None, _range=None, step=None, offset=0):
+        self.expr = expr
+        self.range = _range
+        self.step = step
+        self.offset = offset
+
+    def __str__(self):
+        return f"SubqueryExpr({self.expr}, {self.range}, {self.step}, {self.offset})"
+
+
+class UnaryExpr:
     def __init__(self, op=None, expr=None):
         self.op = op
         self.expr = expr
 
     def __str__(self):
-        return f"UnaryOp: {self.op}, expr: {self.expr}"
+        return f"UnaryExpr({self.op}, {self.expr})"
 
 
-class Parameter:
-    def __init__(self, value=None):
+class VectorSelector:
+    def __init__(self, name=None, label_matchers={}, offset=0):
+        self.name = name
+        self.label_matchers = label_matchers
+        self.offset = offset
+
+    def __str__(self):
+        return f"VectorSelector({self.name}, {self.label_matchers}, {self.offset})"
+
+
+class SeriesDescription:
+    def __init__(self, labels=None, values=None):
+        self.labels = labels
+        self.values = values
+
+    def __str__(self):
+        return f"SeriesDescription({self.labels}, {self.values})"
+
+
+class SequenceValue:
+    def __init__(self, value=None, omitted=False):
         self.value = value
+        self.omitted = omitted
 
     def __str__(self):
-        return f"param: {self.value}"
+        return f"SequenceValue({self.value}, {self.omitted})"
 
 
-class ParameterList:
-    def __init__(self, parameters=None):
-        self.parameters = parameters
+class TimeRange:
+    def __init__(self, start_time=None, end_time=None):
+        self.start_time = start_time
+        self.end_time = end_time
 
     def __str__(self):
-        return ", ".join([str(item) for item in self.parameters])
+        return f"TimeRange({self.start_time}, {self.end_time})"
