@@ -91,9 +91,9 @@ offset_expr: expr OFFSET duration
 
 // Subquery and range selectors.
 
-matrix_selector : expr LEFT_BRACKET duration RIGHT_BRACKET
+matrix_selector : expr LEFT_BRACKET time_range RIGHT_BRACKET
 
-subquery_expr   : (expr LEFT_BRACKET duration COLON maybe_duration RIGHT_BRACKET)
+subquery_expr   : (expr LEFT_BRACKET time_range COLON maybe_duration RIGHT_BRACKET)
 
 // Unary expressions.
 
@@ -173,6 +173,8 @@ signed_number   : (ADD number)
 uint            : NUMBER
 
 duration        : DURATION
+
+time_range      : DURATION | (string_literal [ COLON string_literal ])
 
 string_literal  : STRING
 

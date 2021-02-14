@@ -2,15 +2,7 @@ def list_to_str(input_list):
     return ",".join([str(item) for item in input_list])
 
 
-class Expr:
-    def __init__(self):
-        self.offset = None
-
-    def __str__(self):
-        return f"offset: {self.offset}"
-
-
-class AggregateExpr(Expr):
+class AggregateExpr:
     def __init__(
         self, aggregate_op=None, aggregate_modifier=None, function_call_body=None
     ):
@@ -19,7 +11,7 @@ class AggregateExpr(Expr):
         self.function_call_body = function_call_body
 
     def __str__(self):
-        return f"AggregateExpr({self.aggregate_op}, {self.aggregate_modifier}, {self.function_call_body}, {super().__str__()})"
+        return f"AggregateExpr({self.aggregate_op}, {self.aggregate_modifier}, {list_to_str(self.function_call_body)})"
 
 
 class AggregateModifier:
@@ -31,16 +23,15 @@ class AggregateModifier:
         return f"AggregateModifier({self.grouping}, {self.without})"
 
 
-class BinaryExpression(Expr):
+class BinaryExpression:
     def __init__(self, op=None, left_expr=None, right_expr=None, bin_modifier=None):
-        super().__init__()
         self.op = op
         self.left_expr = left_expr
         self.right_expr = right_expr
         self.bin_modifier = bin_modifier
 
     def __str__(self):
-        return f"BinaryExpression({self.op}, {self.left_expr}, {self.right_expr}, {self.bin_modifier}), {super().__str__()}"
+        return f"BinaryExpression({self.op}, {self.left_expr}, {self.right_expr}, {self.bin_modifier})"
 
 
 class BinaryExpr:
@@ -73,40 +64,44 @@ class Function:
 
 
 class MatrixSelector:
-    def __init__(self, vector_selector=None, _range=None):
+    def __init__(self, vector_selector=None, _range=None, offset=0):
         self.vector_selector = vector_selector
         self.range = _range
+        self.offset = offset
 
     def __str__(self):
-        return f"MatrixSelector({self.vector_selector}, {self.range})"
+        return f"MatrixSelector({self.vector_selector}, {self.range}, {self.offset})"
 
-class SubqueryExpr(Expr):
-    def __init__(self, expr=None, _range=None, step=None):
-        super().__init__()
+
+class SubqueryExpr:
+    def __init__(self, expr=None, _range=None, step=None, offset=0):
         self.expr = expr
         self.range = _range
         self.step = step
+        self.offset = offset
 
     def __str__(self):
-        return f"SubqueryExpr({self.expr}, {self.range}, {self.step})"
+        return f"SubqueryExpr({self.expr}, {self.range}, {self.step}, {self.offset})"
 
 
-class UnaryExpr(Expr):
+class UnaryExpr:
     def __init__(self, op=None, expr=None):
-        super().__init__()
         self.op = op
         self.expr = expr
 
     def __str__(self):
         return f"UnaryExpr({self.op}, {self.expr})"
 
+
 class VectorSelector:
-    def __init__(self, name=None, label_matchers={}):
+    def __init__(self, name=None, label_matchers={}, offset=0):
         self.name = name
         self.label_matchers = label_matchers
+        self.offset = offset
 
     def __str__(self):
-        return f"VectorSelector({self.name}, {self.label_matchers})"
+        return f"VectorSelector({self.name}, {self.label_matchers}, {self.offset})"
+
 
 class SeriesDescription:
     def __init__(self, labels=None, values=None):
@@ -124,3 +119,12 @@ class SequenceValue:
 
     def __str__(self):
         return f"SequenceValue({self.value}, {self.omitted})"
+
+
+class TimeRange:
+    def __init__(self, start_time=None, end_time=None):
+        self.start_time = start_time
+        self.end_time = end_time
+
+    def __str__(self):
+        return f"TimeRange({self.start_time}, {self.end_time})"

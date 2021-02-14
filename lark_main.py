@@ -1,5 +1,7 @@
 from lark import Lark
 from lark import Transformer
+import datetime
+import dateparser
 from nodes import *
 
 grammar = open("promsql.lark", "r").read()
@@ -41,7 +43,7 @@ def duration_literal_to_seconds(duration_literal: str) -> int:
 
 class MyTransformer(Transformer):
     def start(self, items):
-        if len(items) == 0:
+        if items[0] is None:
             return "no expression found in input"
         return items[0]
 
@@ -168,7 +170,7 @@ class MyTransformer(Transformer):
             result = items[0]
             metric_name, label_matchers = get_vector_name(None, result.label_matchers)
             if metric_name is None:
-                raise Exception("Metric name is None!")
+                return None
             result.name = metric_name
             result.label_matchers = label_matchers
         else:
@@ -198,7 +200,7 @@ class MyTransformer(Transformer):
             result = items[0]
         metric_name, label_matchers = get_vector_name(None, result)
         if metric_name is None:
-            raise Exception("Metric name is None!")
+            return None
         result = VectorSelector(name=metric_name, label_matchers=label_matchers)
         return result
 
@@ -217,7 +219,7 @@ class MyTransformer(Transformer):
         return result
 
     def label_set_item(self, items):
-        return {str(items[0]):{"value": str(items[2]), "op": "="}}
+        return {str(items[0]): {"value": str(items[2]), "op": "="}}
 
     def series_description(self, items):
         return SeriesDescription(labels=items[0], values=items[1])
@@ -297,10 +299,19 @@ class MyTransformer(Transformer):
             return None
         return items[0]
 
+    def time_range(self, items):
+        result = TimeRange(
+            start_time=dateparser.parse(str(items[0])),
+            end_time=dateparser.parse(items[2])
+            if len(items) == 3
+            else datetime.datetime.now(),
+        )
+        return result
+
 
 parser = Lark(grammar, start="start", parser="earley")
 
-text = "container_cpu_usage_seconds_total * on(pod) group_left(node) kube_pod_info"
+text = 'rate(http_requests_total[5m])'
 
 tree = parser.parse(text)
 print(MyTransformer().transform(tree))
