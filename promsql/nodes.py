@@ -1,6 +1,10 @@
+import datetime
 import pandas as pd
+from typing import List
 
 from .sql_miscs import fetch_metric_data
+from .constants import VAL_COL, TIME_COL
+from .pandas_miscs import find_tags, resample
 
 
 def list_to_str(input_list):
@@ -84,30 +88,52 @@ class Function(ExecutableExpr):
 
 
 class MatrixSelector(ExecutableExpr):
-    def __init__(self, vector_selector=None, _range=None, offset=0):
-        self.vector_selector = vector_selector
+    def __init__(self, expr=None, _range=None, offset=0):
+        self.expr = expr
         self.range = _range
         self.offset = offset
 
     def __str__(self):
-        return f"MatrixSelector({self.vector_selector}, {self.range}, {self.offset})"
+        return f"MatrixSelector({self.expr}, {self.range}, {self.offset})"
 
-    def eval(self):
-        pass
+    def eval(self, perform_resmaple=True):
+        print(f"MatrixSelector({self.expr}, {self.range}, {self.offset})")
+        if isinstance(self.expr, VectorSelector):
+            df = fetch_metric_data(
+                self.expr.name,
+                self.expr.label_matchers,
+                start_datetime=self.range.start_time,
+                end_datetime=self.range.end_time,
+                offset=self.offset,
+            )
+        else:
+            df = self.expr.eval()
+            start_datetime = self.range.start_time - datetime.timedelta(
+                seconds=self.offset
+            )
+            end_datetime = self.range.end_time - datetime.timedelta(seconds=self.offset)
+            df = df.loc[
+                (df[TIME_COL] >= start_datetime) & (df[TIME_COL] <= end_datetime)
+            ]
+        if perform_resmaple:
+            df = resample(df)
+        return df
 
 
 class SubqueryExpr(ExecutableExpr):
     def __init__(self, expr=None, _range=None, step=None, offset=0):
-        self.expr = expr
-        self.range = _range
+        self.matrix_selector = MatrixSelector(expr=expr, _range=_range, offset=offset)
         self.step = step
-        self.offset = offset
 
     def __str__(self):
-        return f"SubqueryExpr({self.expr}, {self.range}, {self.step}, {self.offset})"
+        return f"SubqueryExpr({self.matrix_selector}, {self.offset})"
 
     def eval(self):
-        pass
+        print(f"SubqueryExpr({self.matrix_selector}, {self.step})")
+        df = self.matrix_selector.eval(perform_resmaple=self.step is None)
+        if self.step is not None:
+            df = resample(df, self.step)
+        return df
 
 
 class UnaryExpr(ExecutableExpr):
@@ -132,8 +158,15 @@ class VectorSelector(ExecutableExpr):
         return f"VectorSelector({self.name}, {self.label_matchers}, {self.offset})"
 
     def eval(self):
-        fetch_metric_data(self.name, self.label_matchers)
         print(f"VectorSelector({self.name}, {self.label_matchers}, {self.offset})")
+        df = fetch_metric_data(
+            self.name,
+            self.label_matchers,
+            end_datetime=datetime.datetime.now(),
+            offset=self.offset,
+        )
+        df = df.loc[df.groupby(find_tags(df))[TIME_COL].idxmax()]
+        return df
 
 
 class SeriesDescription:

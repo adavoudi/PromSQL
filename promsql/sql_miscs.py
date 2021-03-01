@@ -5,7 +5,7 @@ from typing import Dict
 import pandas as pd
 import sqlalchemy
 import datetime
-from promsql.constants import DEFAULT_CONFIGS, CUSTOM_CONFIGS
+from promsql.constants import DEFAULT_CONFIGS, CUSTOM_CONFIGS, VAL_COL, TIME_COL
 
 
 def get_db_engine(db_url: str) -> sqlalchemy.engine.Engine:
@@ -66,6 +66,7 @@ def fetch_metric_data(
     labels=Dict,
     start_datetime: datetime.datetime = None,
     end_datetime: datetime.datetime = None,
+    offset: int = 0,
 ):
     configs = get_metric_configs(
         {
@@ -75,11 +76,21 @@ def fetch_metric_data(
             "end_datetime": end_datetime,
         }
     )
+    if end_datetime is None:
+        end_datetime = datetime.datetime.now()
+    if start_datetime is None:
+        start_datetime = end_datetime - datetime.timedelta(
+            seconds=configs["LOOK_BEHIND_DURATION"]
+        )
+
+    start_datetime = start_datetime - datetime.timedelta(seconds=offset)
+    end_datetime = end_datetime - datetime.timedelta(seconds=offset)
+
     where_clauses = []
-    if start_datetime is not None:
-        where_clauses.append("'{TIMESTAMP_COLUMN}' >= %s" % start_datetime)
-    if end_datetime is not None:
-        where_clauses.append("'{TIMESTAMP_COLUMN}' <= %s" % end_datetime)
+    where_clauses.append(
+        "{TIMESTAMP_COLUMN} in('%sZ', '%sZ')"
+        % (start_datetime.isoformat(), end_datetime.isoformat())
+    )
     for label_name, label_option in labels.items():
         if label_option["op"] == "=":
             op = "="
@@ -98,12 +109,23 @@ def fetch_metric_data(
     where_clause = (
         "WHERE " + " AND ".join(where_clauses) if len(where_clauses) > 0 else ""
     )
-    sql_query = """
+    sql_query = (
+        """
         SELECT *
         FROM '{TABLE_NAME}'
-        {WHERE}
-    """.format(
-        WHERE=where_clause, **configs
+    """
+        + where_clause
+    ).format(**configs)
+    df = pd.read_sql(
+        sql_query, configs["DB"], parse_dates=[configs["TIMESTAMP_COLUMN"]]
+    ).rename(
+        columns={
+            configs["VALUE_COLUMN"]: VAL_COL,
+            configs["TIMESTAMP_COLUMN"]: TIME_COL,
+        }
     )
-    df = pd.read_sql(sql_query, configs["DB"])
-    # print(df.describe())
+    if configs["TAG_COLUMNS"] is not None:
+        df = df[configs["TAG_COLUMNS"] + [VAL_COL, TIME_COL]]
+    print(df.count())
+    print(sql_query)
+    return df

@@ -36,6 +36,8 @@ def duration_literal_to_seconds(duration_literal: str) -> int:
         seconds = num * 60 * 60 * 24
     elif unit == "w":
         seconds = num * 60 * 60 * 24 * 7
+    elif unit == "y":
+        seconds = num * 3.154e+7
     return seconds
 
 
@@ -147,7 +149,7 @@ class PromSqlTransformer(Transformer):
         return result
 
     def matrix_selector(self, items):
-        result = MatrixSelector(vector_selector=items[0], _range=items[2])
+        result = MatrixSelector(expr=items[0], _range=items[2])
         return result
 
     def subquery_expr(self, items):
@@ -190,7 +192,7 @@ class PromSqlTransformer(Transformer):
         return result
 
     def label_matcher(self, items):
-        return {str(items[0]): {"value": str(items[2]), "op": str(items[1])}}
+        return {str(items[0]): {"value": items[2], "op": str(items[1])}}
 
     def metric(self, items):
         if len(items) == 2:
@@ -219,7 +221,7 @@ class PromSqlTransformer(Transformer):
         return result
 
     def label_set_item(self, items):
-        return {str(items[0]): {"value": str(items[2]), "op": "="}}
+        return {str(items[0]): {"value": items[2], "op": "="}}
 
     def series_description(self, items):
         return SeriesDescription(labels=items[0], values=items[1])

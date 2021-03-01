@@ -1,11 +1,16 @@
 # Constant values
 
+VAL_COL = "__value__"
+TIME_COL = "__time__"
+
+DEFAULT_INTERVAL = 60  # seconds
+
 DEFAULT_CONFIGS = {
     "DB": "postgresql://admin:quest@localhost:8812",
     "LOOK_BEHIND_DURATION": 60 * 60,  # seconds (1 hour)
     "TABLE_NAME": "{metric_name}",
-    "VALUE_COLUMN": "value",
-    "TIMESTAMP_COLUMN": lambda params: "timestamp",
+    "VALUE_COLUMN": "origin",
+    "TIMESTAMP_COLUMN": lambda params: "created",
     # Columns to use as tag; can be a list of str, a regex or a function of params
     # if None, we will use all columns other than value_column and timestamp_column
     # as tags
