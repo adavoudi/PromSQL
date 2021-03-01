@@ -3,3 +3,4 @@ black
 lark
 dateparser
 pandas
+sqlalchemy

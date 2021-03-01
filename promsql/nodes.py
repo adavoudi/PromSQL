@@ -1,5 +1,7 @@
 import pandas as pd
 
+from .sql_miscs import fetch_metric_data
+
 
 def list_to_str(input_list):
     return ",".join([str(item) for item in input_list])
@@ -65,6 +67,7 @@ class VectorMatching:
         self.include = include
 
     def __str__(self):
+
         return f"VectorMatching({self.card}, {self.matching_labels}, {self.on}, {self.include})"
 
 
@@ -129,7 +132,8 @@ class VectorSelector(ExecutableExpr):
         return f"VectorSelector({self.name}, {self.label_matchers}, {self.offset})"
 
     def eval(self):
-        print("hey")
+        fetch_metric_data(self.name, self.label_matchers)
+        print(f"VectorSelector({self.name}, {self.label_matchers}, {self.offset})")
 
 
 class SeriesDescription:

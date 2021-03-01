@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  questdb:
+    image: questdb/questdb:5.0.6-linux-amd64
+    ports:
+      - "9000:9000"
+      - "8812:8812"
+      - "9009:9009"
+    volumes:
+      - questdb-storage:/root/.questdb/db
+
+volumes:
+  questdb-storage:
+    driver: local
